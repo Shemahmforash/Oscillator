@@ -4,39 +4,27 @@ window.onload = function() {
     var models = sp.require('$api/models');
     var views = sp.require('$api/views');
 
-    var search = new models.Search('Povarovo');
-    search.localResults = models.LOCALSEARCHRESULTS.APPEND;
 
-    var searchHTML = document.getElementById('results');
-
-    search.observe(models.EVENT.CHANGE, function() {
-        var results = search.tracks;
-        console.log( results );
-        var fragment = document.createDocumentFragment();
-        for (var i=0; i<results.length; i++){
-            var link = document.createElement('li');
-            var a = document.createElement('a');
-            a.href = '#';
-            //results[i].uri;
-            a['data-jsb-artist'] = results[i].artists[0];
-            link.appendChild(a);
-            a.innerHTML = results[i].name;
-            
-           /* var img = document.createElement('image');
-            console.log( results[i].album );
-            img.src = results[i].album.cover;
-
-            link.appendChild( img );*/
-            fragment.appendChild(link);
-        }
-
-        searchHTML.appendChild(fragment);
+    $('#next').click(function(){
+        models.player.next();
+        console.log('play next song');
+        return false;
     });
 
-    search.appendNext();    
+    $('#previous').click(function(){
+        models.player.previous();
+        console.log('play previous song');
+        return false;
+    });
+
+    $('#search').click( function() {
+        var query = $('#query').val();
+
+        doSearch( query );
+    });
 
 
-    $("a").click(function(event) {
+    $("#results").on( "click", "a", function(event) {
         event.preventDefault();
 
         console.log('clicked');
@@ -120,6 +108,43 @@ window.onload = function() {
         player.node.style.height = '300px';
         player.node.style.width = '300px';
         player.node.style.backgroundSize = 'cover';
-        $('#player').append(player.node);
+
+        //delete current contents and add player to DOM
+        $('#player').empty().append(player.node);
     }
+
+    function doSearch( query ) {
+        var search = new models.Search( query );
+        search.localResults = models.LOCALSEARCHRESULTS.APPEND;
+
+        var searchHTML = document.getElementById('results');
+
+        search.observe(models.EVENT.CHANGE, function() {
+            var results = search.tracks;
+            console.log( results );
+            var fragment = document.createDocumentFragment();
+            for (var i=0; i<results.length; i++){
+                var link = document.createElement('li');
+                var a = document.createElement('a');
+                a.href = '#';
+                //results[i].uri;
+                a['data-jsb-artist'] = results[i].artists[0];
+                link.appendChild(a);
+                a.innerHTML = results[i].artists[0] + ' - ' + results[i].name;
+                
+            /* var img = document.createElement('image');
+                console.log( results[i].album );
+                img.src = results[i].album.cover;
+
+                link.appendChild( img );*/
+                fragment.appendChild(link);
+            }
+
+            searchHTML.appendChild(fragment);
+        });
+
+        search.appendNext();    
+        
+    }
+
 };
