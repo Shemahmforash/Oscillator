@@ -1,4 +1,5 @@
-$(document).ready(function() {
+//$(document).ready(function() {
+window.onload = function() {
     /* Instantiate the global sp object; include models & views */
     var sp = getSpotifyApi();
     var models = sp.require('$api/models');
@@ -22,10 +23,46 @@ $(document).ready(function() {
         console.log(seed.name);
     }
 
+    var search = new models.Search('Tenhi');
+    search.localResults = models.LOCALSEARCHRESULTS.APPEND;
+
+    $('#search').click(function(){
+        var query = $('#query').val();
+        console.log('search: ' + query);
+/*
+        if( query ) {
+            search = new models.Search( query );
+            search.localResults = models.LOCALSEARCHRESULTS.APPEND;
+        }*/
+
+        return false;
+    });
+
+    search.observe(models.EVENT.CHANGE, function() {
+        var results = search.tracks;
+        console.log( "results" );
+        console.log( results );
+        var fragment = document.createDocumentFragment();
+        for (var i=0; i<results.length; i++){
+            var link = document.createElement('li');
+            var a = document.createElement('a');
+            a.href = results[i].uri;
+            link.appendChild(a);
+            a.innerHTML = results[i].name;
+            
+            fragment.appendChild(link);
+        }
+
+        var searchHTML = document.getElementById('results');
+        searchHTML.appendChild(fragment);
+        searchHTML.$.show();
+    });
+
     //TODO: radio based on song or based on artist (option to start both)
     var artist_id = seed.uri.replace('spotify', 'spotify-WW');
 
-    getPlaylistFromEchoNest(en_api_key, artist_id);
+    //TODO:uncomment this
+    //getPlaylistFromEchoNest(en_api_key, artist_id);
 
     function getPlaylistFromEchoNest(api_key, artist_id) {
         var url = 'http://developer.echonest.com/api/v4/playlist/basic?api_key=' + api_key + '&callback=?';
@@ -116,4 +153,5 @@ $(document).ready(function() {
         */
     });
 
-});
+//});
+};
