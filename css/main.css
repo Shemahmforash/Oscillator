@@ -1,0 +1,7 @@
+#results {
+     display:none;
+}
+
+.selected {
+     display:block;
+}

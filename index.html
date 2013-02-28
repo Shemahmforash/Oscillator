@@ -8,6 +8,8 @@
 
         <!-- Project CSS files -->
         <link rel="stylesheet" type="text/css" href="css/ink-min.css">
+
+        <link ref="stylesheet" type="text/css" href="css/main.css">
     </head>
     <body>
         <div class="ink-container ink-l">
@@ -18,16 +20,15 @@
 
                 <div class="control">
                     <fieldset>
-                        <label  for="query">Search:</label>
                         <input  type="text" id="query"/>
-                        <button class="sp-button sp-primary" type="button" id="search"><i class="icon-search"></i> Search</button>
+                        <button class="sp-button sp-primary" type="button" id="search">Search</button>
                     </fieldset>
                 </div>
             </form>
 
-            <table id="results" class="ink-table ink-zebra">
+            <table id="results" class="ink-table ink-zebra" style="display:none">
                 <thead>
-                    <tr><th>Song</th></tr>
+                    <tr><th>Songs</th></tr>
                 </thead>
             </table>
 
@@ -35,12 +36,13 @@
 
             <div id="error"></div>
 
+            <p id="msg"></p>
             <div id="player"></div>
 
-            <button type="button" id="previous"><i class="icon-arrow-left" ></i> Previous</button>
-            <button type="button" id="next"    ><i class="icon-arrow-right"></i> Right</button>
-
-            <p id="msg"></p>
+            <section id="controls" style="display:none">
+                <button type="button" id="previous">Previous</button>
+                <button type="button" id="next"    >Next</button>
+            </section>
         </div>
 
         <script src="/js/3rdparty/jquery.min.js"></script> 

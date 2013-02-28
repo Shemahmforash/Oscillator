@@ -7,13 +7,11 @@ window.onload = function() {
 
     $('#next').click(function(){
         models.player.next();
-        console.log('play next song');
         return false;
     });
 
     $('#previous').click(function(){
         models.player.previous();
-        console.log('play previous song');
         return false;
     });
 
@@ -27,22 +25,19 @@ window.onload = function() {
     $("#results").on( "click", "a", function(event) {
         event.preventDefault();
 
-        console.log('clicked');
-        console.log( this.href );
-        console.log('artist');
-        console.log( this['data-jsb-artist'] );
-
         var seed = this['data-jsb-artist'];
         var artist_id = seed.uri.replace('spotify', 'spotify-WW');
-
-        console.log( artist_id );
 
         /* Set traditional mode in JS */
         //$.ajaxSetup({traditional: true, cache: true});
 
-        var en_api_key = '2FOIUUMCRLFMAWJXT';
+        var echonestApiKey = '2FOIUUMCRLFMAWJXT';
 
-        getPlaylistFromEchoNest(en_api_key, artist_id);
+        getPlaylistFromEchoNest(echonestApiKey, artist_id);
+
+        $('#msg').text() = "Radio-playlist based on: " + seed;
+
+        $('#results').hide();
 
         return false;
 
@@ -50,7 +45,6 @@ window.onload = function() {
 
     function getPlaylistFromEchoNest(api_key, artist_id) {
         var url = 'http://developer.echonest.com/api/v4/playlist/basic?api_key=' + api_key + '&callback=?';
-        console.log(url);
 
         /* Set traditional mode in JS */
         $.ajaxSetup({traditional: true, cache: true});
@@ -70,7 +64,6 @@ window.onload = function() {
                 */
             },
         function(data) {
-            console.log(data);
             if (checkResponse(data)) {
                 var playlist = new models.Playlist();
                 for (var i=0;i<data.response.songs.length;i++) {
@@ -79,7 +72,9 @@ window.onload = function() {
                     playlist.add(track);
                 }
 
-                makePlayerView(playlist);
+                makePlayerView( playlist );
+
+                $('#controls').show();
 
             } else {
                 $('#error').text("trouble getting results");
@@ -117,13 +112,26 @@ window.onload = function() {
         var search = new models.Search( query );
         search.localResults = models.LOCALSEARCHRESULTS.APPEND;
 
-        var searchHTML = document.getElementById('results');
+        var searchHTML = document.getElementById( 'results' );
+        //empty previous search results
+        while( searchHTML.firstChild) { 
+            searchHTML.removeChild( searchHTML.firstChild );
+        } 
 
         search.observe(models.EVENT.CHANGE, function() {
             var results = search.tracks;
-            console.log( results );
+
             var fragment = document.createDocumentFragment();
-            for (var i=0; i<results.length; i++){
+
+            /*Default thead*/
+            var thead =  document.createElement('thead');
+            var row  = document.createElement('tr');
+            var td  = document.createElement('td');
+            td.innerHTML = "Songs";
+            thead.appendChild( row );
+            row.appendChild( td );
+
+            for( var i=0; i < results.length; i++){
                 var link_row = document.createElement('tr');
                 var link     = document.createElement('td');
                 var a        = document.createElement('a');
@@ -140,6 +148,7 @@ window.onload = function() {
                 img.src = results[i].album.cover;
 
                 link.appendChild( img );*/
+
                 fragment.appendChild(link_row);
             }
 
@@ -147,7 +156,8 @@ window.onload = function() {
         });
 
         search.appendNext();    
-        
-    }
 
+        $('#results').show();
+
+    }
 };
