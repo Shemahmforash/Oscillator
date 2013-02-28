@@ -7,27 +7,41 @@
         <link rel="stylesheet" type="text/css" href="sp://resources/css/list.css">
 
         <!-- Project CSS files -->
+        <link rel="stylesheet" type="text/css" href="css/ink-min.css">
     </head>
     <body>
-        <section>
-            <h1>Oscillator</h1>
-        </section>
+        <div class="ink-container ink-l">
+            <form class="ink-form inline">
+                <section>
+                    <h1><img src="img/logo.png" width="50" /> Oscillator</h1>
+                </section>
 
-        <input type="text" id="query"/>
-        <input class="sp-button sp-primary" type="button" value="Search" id="search" />
+                <div class="control">
+                    <fieldset>
+                        <label  for="query">Search:</label>
+                        <input  type="text" id="query"/>
+                        <button class="sp-button sp-primary" type="button" id="search"><i class="icon-search"></i> Search</button>
+                    </fieldset>
+                </div>
+            </form>
 
-        <ul id="results"></ul>
+            <table id="results" class="ink-table ink-zebra">
+                <thead>
+                    <tr><th>Song</th></tr>
+                </thead>
+            </table>
 
-        <hr />
+            <hr />
 
-        <div id="error"></div>
+            <div id="error"></div>
 
-        <div id="player"></div>
+            <div id="player"></div>
 
-        <input type="button" value="Previous" id="previous" />
-        <input type="button" value="Next" id="next" />
+            <button type="button" id="previous"><i class="icon-arrow-left" ></i> Previous</button>
+            <button type="button" id="next"    ><i class="icon-arrow-right"></i> Right</button>
 
-        <p id="msg"></p>
+            <p id="msg"></p>
+        </div>
 
         <script src="/js/3rdparty/jquery.min.js"></script> 
         <script src="/js/testing.js"></script> 
