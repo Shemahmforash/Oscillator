@@ -15,8 +15,18 @@ window.onload = function() {
         return false;
     });
 
-    $('#search').click( function() {
+    /*$('#search').click( function() {
         var query = $('#query').val();
+
+        doSearch( query );
+    });*/
+
+    $('#search').submit( function( event ) {
+        event.preventDefault();
+
+        var query = $('#query').val();
+
+        console.log("subit form, searching for " + query);
 
         doSearch( query );
     });
@@ -35,7 +45,7 @@ window.onload = function() {
 
         getPlaylistFromEchoNest(echonestApiKey, artist_id);
 
-        $('#msg').text() = "Radio-playlist based on: " + seed;
+        $('#msg').text("Radio-playlist based on " + seed );
 
         $('#results').hide();
 
@@ -121,7 +131,7 @@ window.onload = function() {
         search.observe(models.EVENT.CHANGE, function() {
             var results = search.tracks;
 
-            var fragment = document.createDocumentFragment();
+            var frag = document.createDocumentFragment();
 
             /*Default thead*/
             var thead =  document.createElement('thead');
@@ -130,7 +140,9 @@ window.onload = function() {
             td.innerHTML = "Songs";
             thead.appendChild( row );
             row.appendChild( td );
+            searchHTML.appendChild( frag );
 
+            var fragment = document.createDocumentFragment();
             for( var i=0; i < results.length; i++){
                 var link_row = document.createElement('tr');
                 var link     = document.createElement('td');
