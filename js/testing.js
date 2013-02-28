@@ -124,20 +124,23 @@ window.onload = function() {
             console.log( results );
             var fragment = document.createDocumentFragment();
             for (var i=0; i<results.length; i++){
-                var link = document.createElement('li');
-                var a = document.createElement('a');
+                var link_row = document.createElement('tr');
+                var link     = document.createElement('td');
+                var a        = document.createElement('a');
+
                 a.href = '#';
                 //results[i].uri;
                 a['data-jsb-artist'] = results[i].artists[0];
+                link_row.appendChild(link);
                 link.appendChild(a);
                 a.innerHTML = results[i].artists[0] + ' - ' + results[i].name;
-                
+
             /* var img = document.createElement('image');
                 console.log( results[i].album );
                 img.src = results[i].album.cover;
 
                 link.appendChild( img );*/
-                fragment.appendChild(link);
+                fragment.appendChild(link_row);
             }
 
             searchHTML.appendChild(fragment);
