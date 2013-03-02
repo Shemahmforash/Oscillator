@@ -14,14 +14,17 @@
     <body>
         <section class="ink-container ink-l">
             <h1><img src="img/logo.png" width="50" /> Oscillator</h1>
+            <p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
             <form class="ink-form inline" id="search">
                 <div class="control">
                     <fieldset>
                         <input  type="text" id="query"/>
-                        <button class="sp-button sp-primary" type="submit">Search</button>
+                        <button class="sp-button sp-primary" name="search" type="submit">Search</button>
                     </fieldset>
+                    <button class="sp-button sp-primary" name="random">Random Song</button>
                 </div>
             </form>
+
 
             <table id="results" class="ink-table ink-zebra" style="display:none">
                 <thead>

@@ -4,6 +4,8 @@ window.onload = function() {
     var models = sp.require('$api/models');
     var views = sp.require('$api/views');
 
+    var echonestApiKey = '2FOIUUMCRLFMAWJXT';
+
 
     $('#next').click(function(){
         models.player.next();
@@ -21,14 +23,37 @@ window.onload = function() {
         doSearch( query );
     });*/
 
+    var $form = $( '#search' );
+    var $submitBtns = $form.find( 'button' );
+    var whoSubmitted;
+
+    $submitBtns.click( function( event ) {
+        whoSubmitted = this;
+    });
+
     $('#search').submit( function( event ) {
         event.preventDefault();
 
-        var query = $('#query').val();
+        //random song or do search by query
+        if( whoSubmitted.name == 'random' ) {
+            var max = models.library.tracks.length;
+            var random_number = Math.floor( Math.random() * max );
+            //find a random song from the user's library
+            var seed = models.library.tracks[random_number].artists[0];
+            var artist_id = seed.uri.replace('spotify', 'spotify-WW');
 
-        console.log("subit form, searching for " + query);
+            getPlaylistFromEchoNest(echonestApiKey, artist_id);
 
-        doSearch( query );
+            $('#msg').text("Radio-playlist based on " + seed );
+
+            $('#results').hide();
+        }
+        else {
+
+            var query = $('#query').val();
+
+            doSearch( query );
+        }
     });
 
 
@@ -41,7 +66,6 @@ window.onload = function() {
         /* Set traditional mode in JS */
         //$.ajaxSetup({traditional: true, cache: true});
 
-        var echonestApiKey = '2FOIUUMCRLFMAWJXT';
 
         getPlaylistFromEchoNest(echonestApiKey, artist_id);
 
@@ -85,6 +109,7 @@ window.onload = function() {
                 makePlayerView( playlist );
 
                 $('#controls').show();
+                $('#error').text('');
 
             } else {
                 $('#error').text("trouble getting results");
