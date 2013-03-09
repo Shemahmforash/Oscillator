@@ -1,10 +1,32 @@
 "use strict";
 window.onload = function() {
+    //spotify api init
     var sp = getSpotifyApi();
     var models = sp.require('$api/models');
     var views = sp.require('$api/views');
 
-    var echonestApiKey = '2FOIUUMCRLFMAWJXT';
+    //oscillator config values
+    var config = {
+            //echonest api parameters
+            echonest: {
+                apiKey: "2FOIUUMCRLFMAWJXT",
+                playlistType: "basic",
+                radioType: "artist-radio"
+                /*
+                artist-radio - plays songs for the given artists and similar artists
+                song-radio - plays songs similar to the song specified.
+                genre-radio - plays songs from artists matching the given genre
+                */
+            },
+            playlist: {
+               suffix: "#oscillator", 
+               songNumber: 20
+            },
+        };
+
+    // a global array that will contain the current tracks in the player
+    var currentTracks = new Array();
+    var globalSeed;
 
     $('#next').click(function(){
         models.player.next();
@@ -14,6 +36,19 @@ window.onload = function() {
     $('#previous').click(function(){
         models.player.previous();
         return false;
+    });
+
+    $('#savePlaylist').click(function(){
+        var title = config.echonest.radioType + " for " + globalSeed;
+        if( config.playlist.suffix ) {
+            title = title + " - " + config.playlist.suffix;     
+        }
+
+        var thePlaylist = new models.Playlist(title);
+
+        for (var i = 0; i < currentTracks.length; i++) {
+            thePlaylist.add(currentTracks[i]);
+        }
     });
 
     var $form = $( '#search' );
@@ -34,7 +69,7 @@ window.onload = function() {
             var random_number = Math.floor( Math.random() * max );
             var seed = models.library.tracks[random_number].artists[0];
 
-            getPlaylistFromEchoNest(echonestApiKey, seed );
+            getPlaylistFromEchoNest(config.echonest.apiKey, seed );
 
 
             $('#results').hide();
@@ -52,15 +87,17 @@ window.onload = function() {
 
         var seed = this['data-jsb-artist'];
 
-        getPlaylistFromEchoNest(echonestApiKey, seed);
+        getPlaylistFromEchoNest(config.echonest.apiKey, seed);
 
 
         return false;
 
     });
-
+    
     function getPlaylistFromEchoNest( api_key, artist ) {
         var artist_id = artist.uri.replace('spotify', 'spotify-WW');
+
+        globalSeed = artist;
 
         var url = 'http://developer.echonest.com/api/v4/playlist/basic?api_key=' + api_key + '&callback=?';
 
@@ -84,10 +121,16 @@ window.onload = function() {
         function(data) {
             if (checkResponse(data)) {
                 var playlist = new models.Playlist();
+
+                //empty current tracks
+                currentTracks.length = 0;
+
+                //add tracks to the playlist obj and to the global array
                 for (var i=0;i<data.response.songs.length;i++) {
                     var track_uri = data.response.songs[i].tracks[0].foreign_id.replace('-WW', '');
                     var track = models.Track.fromURI(track_uri);
                     playlist.add(track);
+                    currentTracks.push( track );
                 }
 
                 makePlayerView( playlist );
@@ -97,7 +140,8 @@ window.onload = function() {
                 $('#error').text('');
                 $('#results').hide();
 
-                $('#msg').text("Radio-playlist based on " + artist );
+                var msg = config.echonest.radioType + " for " + artist;
+                $('#msg').text( msg );
 
             } else {
                 $('#error').text("trouble getting results");
@@ -122,7 +166,8 @@ window.onload = function() {
     function showPlaylist( playlist ) {
         var list = new views.List( playlist ); 
    
-        document.getElementById('playlist').appendChild( list.node ); 
+        //empty and add list view for the player
+        $('#playlist').empty().append( list.node );
     }
 
     function makePlayerView(uri) {
