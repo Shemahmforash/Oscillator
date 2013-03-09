@@ -6,7 +6,6 @@ window.onload = function() {
 
     var echonestApiKey = '2FOIUUMCRLFMAWJXT';
 
-
     $('#next').click(function(){
         models.player.next();
         return false;
@@ -16,12 +15,6 @@ window.onload = function() {
         models.player.previous();
         return false;
     });
-
-    /*$('#search').click( function() {
-        var query = $('#query').val();
-
-        doSearch( query );
-    });*/
 
     var $form = $( '#search' );
     var $submitBtns = $form.find( 'button' );
@@ -36,20 +29,17 @@ window.onload = function() {
 
         //random song or do search by query
         if( whoSubmitted.name == 'random' ) {
+            //find a random song from the user's library
             var max = models.library.tracks.length;
             var random_number = Math.floor( Math.random() * max );
-            //find a random song from the user's library
             var seed = models.library.tracks[random_number].artists[0];
-            var artist_id = seed.uri.replace('spotify', 'spotify-WW');
 
-            getPlaylistFromEchoNest(echonestApiKey, artist_id);
+            getPlaylistFromEchoNest(echonestApiKey, seed );
 
-            $('#msg').text("Radio-playlist based on " + seed );
 
             $('#results').hide();
         }
         else {
-
             var query = $('#query').val();
 
             doSearch( query );
@@ -61,23 +51,17 @@ window.onload = function() {
         event.preventDefault();
 
         var seed = this['data-jsb-artist'];
-        var artist_id = seed.uri.replace('spotify', 'spotify-WW');
 
-        /* Set traditional mode in JS */
-        //$.ajaxSetup({traditional: true, cache: true});
+        getPlaylistFromEchoNest(echonestApiKey, seed);
 
-
-        getPlaylistFromEchoNest(echonestApiKey, artist_id);
-
-        $('#msg').text("Radio-playlist based on " + seed );
-
-        $('#results').hide();
 
         return false;
 
     });
 
-    function getPlaylistFromEchoNest(api_key, artist_id) {
+    function getPlaylistFromEchoNest( api_key, artist ) {
+        var artist_id = artist.uri.replace('spotify', 'spotify-WW');
+
         var url = 'http://developer.echonest.com/api/v4/playlist/basic?api_key=' + api_key + '&callback=?';
 
         /* Set traditional mode in JS */
@@ -88,7 +72,7 @@ window.onload = function() {
                 artist_id: artist_id,
                 format:'jsonp',
                 limit: true,
-                results: 50,
+                results: 20,
                 type:'artist-radio',
                 bucket: ['id:spotify-WW', 'tracks']
                 /*
@@ -107,9 +91,13 @@ window.onload = function() {
                 }
 
                 makePlayerView( playlist );
+                showPlaylist( playlist );
 
                 $('#controls').show();
                 $('#error').text('');
+                $('#results').hide();
+
+                $('#msg').text("Radio-playlist based on " + artist );
 
             } else {
                 $('#error').text("trouble getting results");
@@ -129,6 +117,12 @@ window.onload = function() {
             error("Unexpected response from server");
         }
         return false;
+    }
+
+    function showPlaylist( playlist ) {
+        var list = new views.List( playlist ); 
+   
+        document.getElementById('playlist').appendChild( list.node ); 
     }
 
     function makePlayerView(uri) {

@@ -7,7 +7,6 @@
         <link rel="stylesheet" type="text/css" href="sp://resources/css/list.css">
 
         <!-- Project CSS files -->
-        <link rel="stylesheet" type="text/css" href="css/ink-min.css">
 
         <link ref="stylesheet" type="text/css" href="css/main.css">
     </head>
@@ -37,15 +36,22 @@
             <div id="error"></div>
 
             <p id="msg"></p>
-            <div id="player"></div>
 
-            <section id="controls" style="display:none">
-                <button type="button" id="previous">Previous</button>
-                <button type="button" id="next"    >Next</button>
-            </section>
+            <section class="player">
 
-            <section id="history">
+                <div id="player"></div>
+                <div id="playlist"></div>
 
+<!--
+                <section id="controls" style="display:none">
+                    <button type="button" id="previous">Previous</button>
+                    <button type="button" id="next"    >Next</button>
+                </section>
+-->
+
+                <section id="history">
+                    TODO: Slider with the last x playlists generated in form of small player. When click, replace the actual player.
+                </section>
             </section>
 
         </section>
