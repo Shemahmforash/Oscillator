@@ -11,8 +11,8 @@
         <link ref="stylesheet" type="text/css" href="css/main.css">
     </head>
     <body>
-        <section class="ink-container ink-l">
-            <h1><img src="img/logo.png" width="50" /> Oscillator</h1>
+        <h1><img src="img/logo.png" width="50" /> Oscillator</h1>
+        <section id="home" class="ink-container ink-l tabs">
             <p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
             <form class="ink-form inline" id="search">
                 <div class="control">
@@ -45,13 +45,6 @@
 
                 <div id="playlist"></div>
 
-<!--
-                <section id="controls" style="display:none">
-                    <button type="button" id="previous">Previous</button>
-                    <button type="button" id="next"    >Next</button>
-                </section>
--->
-
                 <section id="history">
                     TODO: Slider with the last x playlists generated in form of small player. When click, replace the actual player.
                 </section>
@@ -59,8 +52,31 @@
 
         </section>
 
+        <section class="ink-container ink-l tabs" id="settings" style="display:none">
+            <h2>
+                Settings
+            </h2>
+            <form class="ink-form inline" id="search">
+                Radio-type:
+                <select name="radio">
+                    <option value="artist-radio">Artist Radio</option>
+                    <option value="track-radio">Track Radio</option>
+                    <option value="genre-radio">Genre Radio</option>
+                </select>
+
+                Playlist-type:
+                <select name="radio">
+                    <option value="basic">Basic</option>
+                    <option value="dynamic">Dynamic</option>
+                </select>
+
+                Song number: <input type="text" name="number" />
+
+                <button class="sp-button sp-primary" name="save" type="submit">Save Settings</button>
+            </form>
+       </section>
+
         <script src="/js/3rdparty/jquery.min.js"></script> 
         <script src="/js/testing.js"></script> 
-        <!--<script src="/js/echonest.js"></script> -->
     </body>
 </html>

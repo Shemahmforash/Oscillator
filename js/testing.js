@@ -28,6 +28,22 @@ window.onload = function() {
     var currentTracks = new Array();
     var globalSeed;
 
+    //TABS
+    //tabs();                                                         
+    models.application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
+
+    function tabs() {
+        var args = models.application.arguments;
+        var current = document.getElementById(args[0]);
+        var sections = document.getElementsByClassName('tabs');
+        for (var i=0, l = sections.length; i<l; i++){
+            if (current != sections[i]) {
+                sections[i].style.display = 'none';
+            }
+        }
+        current.style.display = 'block';
+    }
+
     $('#next').click(function(){
         models.player.next();
         return false;
@@ -66,11 +82,16 @@ window.onload = function() {
         if( whoSubmitted.name == 'random' ) {
             //find a random song from the user's library
             var max = models.library.tracks.length;
-            var random_number = Math.floor( Math.random() * max );
-            var seed = models.library.tracks[random_number].artists[0];
+            if( max ) {
+                var random_number = Math.floor( Math.random() * max );
+                var seed = models.library.tracks[random_number].artists[0];
 
-            getPlaylistFromEchoNest(config.echonest.apiKey, seed );
-
+                getPlaylistFromEchoNest(config.echonest.apiKey, seed );
+            }
+            else {
+                var msg = "Your library is empty. Oscillator can not get a random song from your library... Try to search for songs.";
+                $('#msg').text( msg );
+            }
 
             $('#results').hide();
         }
