@@ -5,8 +5,15 @@ window.onload = function() {
     var models = sp.require('$api/models');
     var views = sp.require('$api/views');
 
+
     //oscillator config values
-    var config = {
+    var config;
+    if( localStorage.getItem("config") ) {
+        config = JSON.parse( localStorage.getItem("config") );
+    }
+    else {
+        //default config
+        config = {
             //echonest api parameters
             echonest: {
                 apiKey: "2FOIUUMCRLFMAWJXT",
@@ -23,6 +30,7 @@ window.onload = function() {
                songNumber: 20
             },
         };
+    }
 
     // a global array that will contain the current tracks in the player
     var currentTracks = new Array();
@@ -100,6 +108,12 @@ window.onload = function() {
 
             doSearch( query );
         }
+    });
+
+    $('#settings').submit( function( event ) {
+        event.preventDefault();
+        //TODO: set config values from combos and input
+        localStorage.setItem( "config", JSON.stringify( config ) );
     });
 
 
