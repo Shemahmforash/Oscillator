@@ -1,3 +1,8 @@
+.selected { font-weight: bold }
+.hidden   { display: none }
+
+[data-binder-tmpl] { display: none }
+
 #results {
      display:none;
 }
