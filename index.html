@@ -7,11 +7,59 @@
         <link rel="stylesheet" type="text/css" href="sp://resources/css/list.css">
 
         <!-- Project CSS files -->
-
-        <link ref="stylesheet" type="text/css" href="css/main.css">
+        <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
-        <h1><img src="img/logo.png" width="50" /> Oscillator</h1>
+
+    <header>
+        <img src="img/logo.png" width="50" />
+        <h1> Oscillator</h1>
+    </header>
+
+    <section class="main">
+        <section id="home" class="tabs">
+            <p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
+
+            <form class="ink-form inline" data-binder="class: AppForm, name: Form">
+                <div class="control">
+                    <fieldset>
+                        <input type="text" data-binder="class: Binder, name: Query"/>
+                        <button class="sp-button sp-primary" name="search" type="submit" data-binder="class:AppButton, name: Search">Search</button>
+                    </fieldset>
+                    <button class="sp-button sp-primary" name="random" type="submit" data-binder="class:AppButton, name: Random">Random Song</button>
+                    <span data-binder="class: AppError, delay: 1000" class="hidden"></span>
+                </div>
+            </form>
+
+            <ul data-binder="class: AppResults, name: Results" class="hidden">
+                <li data-binder="AppItem" data-binder-tmpl>
+                    <span data-binder="class: Binder, name: Artist"></span>
+                    <span data-binder="class: Binder, name: Track"></span>
+                </li>
+            </ul>
+
+             <section data-binder="class: AppController, name: Player, type: Context">
+
+                <div data-binder="class: AppPlayer, name: Player"></div>
+
+                <button type="button" data-binder="class: AppSavePlaylist, name: Save">Save Playlist</button>
+
+                <div data-binder="class: AppPlaylist, name: Playlist"></div>
+
+                <section id="history">
+                    TODO: Slider with the last x playlists generated in form of small player. When click, replace the actual player.
+                </section>
+            </section>
+
+        </section>
+        <section class="tabs hidden" id="settings">
+            <h2>
+                Settings
+            </h2>
+        </section>
+    </section>
+
+<!--
         <section id="home" class="ink-container ink-l tabs">
             <p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
             <form class="ink-form inline" id="search">
@@ -75,8 +123,15 @@
                 <button class="sp-button sp-primary" name="save" type="submit">Save Settings</button>
             </form>
        </section>
+-->
 
         <script src="/js/3rdparty/jquery.min.js"></script> 
-        <script src="/js/testing.js"></script> 
+        <script src="/js/index/10.binder.js"></script> 
+        <script src="/js/index/90.app.js"></script> 
+
+        <script type="text/javascript">        
+            app = new Binder( document.body );
+        </script>
+
     </body>
 </html>
