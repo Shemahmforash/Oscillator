@@ -135,6 +135,7 @@ window.onload = function() {
         globalSeed = artist;
 
         var url = 'http://developer.echonest.com/api/v4/playlist/basic?api_key=' + api_key + '&callback=?';
+        console.log( url );
 
         /* Set traditional mode in JS */
         $.ajaxSetup({traditional: true, cache: true});

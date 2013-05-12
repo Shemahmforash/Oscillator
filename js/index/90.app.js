@@ -102,17 +102,22 @@
         _getPlaylistFromEchonest: function( seed ) {
             //with this echonests sends spotify song ids
             var artist_id = seed.uri.replace('spotify', 'spotify-WW');
+            var that = this;
             console.log("key");
             console.log( config.echonest.apiKey );
 
             var url = 'http://developer.echonest.com/api/v4/playlist/basic?api_key=' + config.echonest.apiKey + '&callback=?';
 
-            $.getJSON( url,  {
+             /* Set traditional mode in JS */
+            $.ajaxSetup({traditional: true, cache: true});
+
+            $.getJSON( url,  
+                {
                     artist_id: artist_id,
                     format:'jsonp',
                     limit: true,
                     results: 20,
-                    type: config.echonest.radioType,
+                    type:'artist-radio',
                     bucket: ['id:spotify-WW', 'tracks']
                     /*
                     artist-radio - plays songs for the given artists and similar artists
@@ -121,13 +126,12 @@
                     */
                 }
                 , function ( data ) {
-                    if ( checkResponse( data ) ) {
-                        this.context.Player.update( data );
-                        this.context.Player.seed = seed;
-
+                    if ( that._checkResponse( data ) ) {
+                        that.context.Player.seed = seed;
+                        that.context.Player.update( data );
                     }
                     else {
-                        this.Error.update("trouble getting results");
+                        that.Error.update("trouble getting results");
                     }
                 }
             );
@@ -189,6 +193,15 @@
         constructor: function () {
             Binder.apply( this, arguments );
             this.currentTracks = new Array();
+        }
+        , update: function ( data ) {
+            
+            console.log( "data" );
+            console.log( data );
+
+            console.log( "seed" );
+            console.log( this.seed );
+
         }
     });
 
