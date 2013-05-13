@@ -19,7 +19,7 @@
     }
     else {
         //default config
-        this.config = {
+        config = {
             //echonest api parameters
             echonest: {
                 apiKey: "2FOIUUMCRLFMAWJXT",
@@ -65,9 +65,6 @@
       , submit: function ( event ) {
             if ( event )
                 event.preventDefault();
-
-            console.log( "form submitted ");
-            console.log("whosubmitted: " + this.whoSubmitted );
 
             if( this.whoSubmitted === 'Random' ) {
                 var max = models.library.tracks.length;
@@ -129,6 +126,8 @@
                     if ( that._checkResponse( data ) ) {
                         that.context.Player.seed = seed;
                         that.context.Player.update( data );
+
+                        that.context.Player.Title.value( config.echonest.radioType + ' for ' + seed.data.name );
                     }
                     else {
                         that.Error.update("trouble getting results");
@@ -217,17 +216,20 @@
     define('AppPlayer', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
+
+            //instantiate spotify player with some options
+            this.player = new views.Player();
+            this.player.node.style.height = '300px';
+            this.player.node.style.width = '300px';
+            this.player.node.style.backgroundSize = 'cover';
         }
         , update: function ( playlist ) {
-            var player = new views.Player();
-            player.track = null;
-            player.context = playlist;
-            player.node.style.height = '300px';
-            player.node.style.width = '300px';
-            player.node.style.backgroundSize = 'cover';
+            //reset the player and then update it with new playlist
+            this.player.track = null;
+            this.player.context = playlist;
 
             //delete current contents and add player to DOM
-            $( this.elem ).empty().append( player.node );
+            $( this.elem ).empty().append( this.player.node );
         }
     });
 
