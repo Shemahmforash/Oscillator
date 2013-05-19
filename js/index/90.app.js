@@ -309,4 +309,21 @@
         }
     });
 
+    define('AppSettings', Binder, { 
+        constructor: function () {
+            Binder.apply( this, arguments );
+
+            on( this, 'submit' );
+        }
+        , submit: function( event ) {
+            if ( event )
+                event.preventDefault();
+
+            console.log( "save settings" );
+
+            //TODO: set config values from combos and input            
+            localStorage.setItem( "config", JSON.stringify( config ) );
+        }
+    });
+
 })( Binder );
