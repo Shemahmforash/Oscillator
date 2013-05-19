@@ -79,7 +79,7 @@
                     this._getPlaylistFromEchonest( seed );
                 }
                 else {
-                    var msg = "Your library is empty. Oscillator can not get a random song from your library... Try to search for songs.";
+                    var msg = "Your library is empty. Oscillator can not get a random song from your library... You should use the search songs feature instead.";
                     this.Error.update( msg );
                 }
                 
@@ -88,10 +88,7 @@
                 //search for artists
                 var query = this.Query.elem.value;
 
-                console.log( "query" );
-                console.log( query );
-
-                //TODO: do the search on spotify
+                this._doSearch( query );
             }
 
             return false;
@@ -147,6 +144,22 @@
                 error("Unexpected response from server");
             }
             return false;
+        }
+        , _doSearch: function ( query ) {
+            var search = new models.Search( query );
+            search.localResults = models.LOCALSEARCHRESULTS.APPEND;
+
+            var that = this;
+
+            search.observe(models.EVENT.CHANGE, function() {
+                var results = search.tracks;
+                
+                that.context.Results.update( results ); 
+                that.context.Results.show();
+
+            });
+
+            search.appendNext();
         }
     });
 
@@ -254,25 +267,44 @@
                 title = title + " - " + config.playlist.suffix;
             }
 
-            var thePlaylist = new models.Playlist(title);
+            var thePlaylist = new models.Playlist( title );
             for (var i = 0; i < this.context.currentTracks.length; i++) {
                 thePlaylist.add( this.context.currentTracks[i] );
-            }            
+            }
             return false;
         }
     });
 
-    define('AppResults', Binder, {
+    /*define('AppResults', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
         }
-    });
+        , update: function( data ) {
+            var filtered = new Array(); 
+            for( var i = 0; i < data.length; i++ ){
+                var item = { 'Artist': data[i].artists[0].data.name, 'Track': data[i].name };
+                filtered.push( item );
+            }
 
-    define('AppItem', Binder, {             
+            Binder.prototype.update.call( this, filtered );
+            this.show();
+        }
+    });*/
+
+    define('AppItem', Binder, { 
         constructor: function () {
-            this.isContext = true;
-            this.group     = 'items';
             Binder.apply( this, arguments );
+        }
+        , update: function ( data ) {
+            var filtered = {};
+            filtered['Artist'] = data.artists[0].name;
+            filtered['Track']  = data.name;
+            filtered['Album']  = data.album.name;
+
+            console.log("item update:");
+            console.log( filtered );
+
+            return Binder.prototype.update.call( this, filtered );
         }
     });
 

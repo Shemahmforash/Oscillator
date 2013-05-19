@@ -11,123 +11,62 @@
     </head>
     <body>
 
-    <header>
-        <img src="img/logo.png" width="50" />
-        <h1> Oscillator</h1>
-    </header>
+        <header>
+            <img src="img/logo.png" width="50" />
+            <h1> Oscillator</h1>
+        </header>
 
-    <section class="main">
-        <section id="home" class="tabs">
-            <p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
+        <section class="main">
+            <section id="home" class="tabs">
+                <p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
 
-            <form class="ink-form inline" data-binder="class: AppForm, name: Form">
-                <div class="control">
-                    <fieldset>
-                        <input type="text" data-binder="class: Binder, name: Query"/>
-                        <button class="sp-button sp-primary" name="search" type="submit" data-binder="class:AppButton, name: Search">Search</button>
-                    </fieldset>
-                    <button class="sp-button sp-primary" name="random" type="submit" data-binder="class:AppButton, name: Random">Random Song</button>
-                    <span data-binder="class: AppError, delay: 1000" class="hidden"></span>
-                </div>
-            </form>
+                <form class="ink-form inline" data-binder="class: AppForm, name: Form">
+                    <div class="control">
+                        <fieldset>
+                            <input type="text" data-binder="class: Binder, name: Query"/>
+                            <button class="sp-button sp-primary" name="search" type="submit" data-binder="class:AppButton, name: Search">Search</button>
+                        </fieldset>
+                        <button class="sp-button sp-primary" name="random" type="submit" data-binder="class:AppButton, name: Random">Random Song</button>
+                        <span data-binder="class: AppError, delay: 1000" class="hidden"></span>
+                    </div>
+                </form>
 
-            <ul data-binder="class: AppResults, name: Results" class="hidden">
-                <li data-binder="AppItem" data-binder-tmpl>
-                    <span data-binder="class: Binder, name: Artist"></span>
-                    <span data-binder="class: Binder, name: Track"></span>
-                </li>
-            </ul>
+                <ul data-binder="class: Appender, name: Results" class="hidden">
+                    <li data-binder="class: AppItem, type: context" data-binder-tmpl>
+                        <span data-binder="class: Binder, name: Artist"></span>
+                        -
+                        <span data-binder="class: Binder, name: Track"></span>
+                        (
+                        <span data-binder="class: Binder, name: Album"></span>
+                        )
+                    </li>
+                </ul>
 
-             <section data-binder="class: AppController, name: Player, type: Context">
-                <h1 data-binder="class: Binder, name: Title"></h1>
+                <section data-binder="class: AppController, name: Player, type: Context">
+                    <h1 data-binder="class: Binder, name: Title"></h1>
 
-                <div data-binder="class: AppPlayer, name: Player"></div>
+                    <div data-binder="class: AppPlayer, name: Player"></div>
 
-                <button type="button" data-binder="class: AppSavePlaylist, name: Save">Save Playlist</button>
+                    <button type="button" data-binder="class: AppSavePlaylist, name: Save">Save Playlist</button>
 
-                <div data-binder="class: AppPlaylist, name: Playlist"></div>
+                    <div data-binder="class: AppPlaylist, name: Playlist"></div>
 
-                <section id="history">
-                    TODO: Slider with the last x playlists generated in form of small player. When click, replace the actual player.
+                    <section id="history">
+                        TODO: Slider with the last x playlists generated in form of small player. When click, replace the actual player.
+                    </section>
                 </section>
+
             </section>
-
-        </section>
-        <section class="tabs hidden" id="settings">
-            <h2>
-                Settings
-            </h2>
-        </section>
-    </section>
-
-<!--
-        <section id="home" class="ink-container ink-l tabs">
-            <p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
-            <form class="ink-form inline" id="search">
-                <div class="control">
-                    <fieldset>
-                        <input  type="text" id="query"/>
-                        <button class="sp-button sp-primary" name="search" type="submit">Search</button>
-                    </fieldset>
-                    <button class="sp-button sp-primary" name="random">Random Song</button>
-                </div>
-            </form>
-
-
-            <table id="results" class="ink-table ink-zebra" style="display:none">
-                <thead>
-                    <tr><th>Songs</th></tr>
-                </thead>
-            </table>
-
-            <hr />
-
-            <div id="error"></div>
-
-            <p id="msg"></p>
-
-            <section class="player">
-
-                <div id="player"></div>
-
-                <button type="button" id="savePlaylist">Save Playlist</button>
-
-                <div id="playlist"></div>
-
-                <section id="history">
-                    TODO: Slider with the last x playlists generated in form of small player. When click, replace the actual player.
-                </section>
+            <section class="tabs hidden" id="settings">
+                <h2>
+                    Settings
+                </h2>
             </section>
-
         </section>
-
-        <section class="ink-container ink-l tabs" id="settings" style="display:none">
-            <h2>
-                Settings
-            </h2>
-            <form class="ink-form inline" id="settings">
-                Radio-type:
-                <select name="radio">
-                    <option value="artist-radio">Artist Radio</option>
-                    <option value="track-radio">Track Radio</option>
-                    <option value="genre-radio">Genre Radio</option>
-                </select>
-
-                Playlist-type:
-                <select name="radio">
-                    <option value="basic">Basic</option>
-                    <option value="dynamic">Dynamic</option>
-                </select>
-
-                Song number: <input type="text" name="number" />
-
-                <button class="sp-button sp-primary" name="save" type="submit">Save Settings</button>
-            </form>
-       </section>
--->
 
         <script src="/js/3rdparty/jquery.min.js"></script> 
         <script src="/js/index/10.binder.js"></script> 
+        <script src="/js/index/11.binderx.js"></script> 
         <script src="/js/index/90.app.js"></script> 
 
         <script type="text/javascript">        
