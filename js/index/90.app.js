@@ -16,6 +16,7 @@
     var config;
     if( localStorage.getItem("config") ) {
         config = JSON.parse( localStorage.getItem("config") );
+        console.log( config );
     }
     else {
         //default config
@@ -35,8 +36,13 @@
                suffix: "#oscillator", 
                songNumber: 20
             },
+            history: [],
         };
     }
+    
+    window.onbeforeunload = function(e) {
+        localStorage.setItem( "config", JSON.stringify( config ) );
+    };
 
     /*TAB SWITCHING*/
     models.application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
@@ -246,6 +252,10 @@
 
             //delete current contents and add player to DOM
             $( this.elem ).empty().append( this.player.node );
+
+            //add this new playlist to config history
+            console.log( config );
+            config.history.push( playlist );
         }
     });
 
@@ -336,9 +346,12 @@
             on( this, 'click' );
         }
         , click: function() {
+            var pl = this.player.context;
+
             //update current playing with the slide clicked
-            this.context.Player.update( this.player.context );
-            this.context.Playlist.update( this.player.context );
+            this.context.Player.update( pl );
+            this.context.Playlist.update( pl );
+
         }
     });
 
