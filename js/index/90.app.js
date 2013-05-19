@@ -94,11 +94,15 @@
             return false;
         },
         _getPlaylistFromEchonest: function( seed ) {
-            //with this echonests sends spotify song ids
+            console.log( "seed: ");
+            console.log( seed );
+
+            if( !seed ) 
+                return;
+
+            //make echonest send spotify song ids
             var artist_id = seed.uri.replace('spotify', 'spotify-WW');
             var that = this;
-            console.log("key");
-            console.log( config.echonest.apiKey );
 
             var url = 'http://developer.echonest.com/api/v4/playlist/basic?api_key=' + config.echonest.apiKey + '&callback=?';
 
@@ -275,34 +279,31 @@
         }
     });
 
-    /*define('AppResults', Binder, {
-        constructor: function () {
-            Binder.apply( this, arguments );
-        }
-        , update: function( data ) {
-            var filtered = new Array(); 
-            for( var i = 0; i < data.length; i++ ){
-                var item = { 'Artist': data[i].artists[0].data.name, 'Track': data[i].name };
-                filtered.push( item );
-            }
-
-            Binder.prototype.update.call( this, filtered );
-            this.show();
-        }
-    });*/
-
     define('AppItem', Binder, { 
         constructor: function () {
             Binder.apply( this, arguments );
+
+            this.artistObject;
+
+            on( this, 'click' );
+        }
+        , click: function() {
+            //generate radio-playlist for the artist chosen
+            this.context.context.Form._getPlaylistFromEchonest( this.artistObject );
+
+            //hide and empty search results
+            this.context.hide();
         }
         , update: function ( data ) {
             var filtered = {};
+
+            //for presenting on screen
             filtered['Artist'] = data.artists[0].name;
             filtered['Track']  = data.name;
             filtered['Album']  = data.album.name;
 
-            console.log("item update:");
-            console.log( filtered );
+            //to use as seed for radio
+            this.artistObject = data.artists[0];
 
             return Binder.prototype.update.call( this, filtered );
         }

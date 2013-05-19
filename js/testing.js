@@ -124,7 +124,6 @@ window.onload = function() {
 
         getPlaylistFromEchoNest(config.echonest.apiKey, seed);
 
-
         return false;
 
     });
