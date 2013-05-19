@@ -17,7 +17,7 @@
         </header>
 
         <section class="main">
-            <section id="home" class="tabs">
+            <section id="home" class="tabs" data-binder="class: Binder, name: Home, type: context">
                 <p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
 
                 <form class="ink-form inline" data-binder="class: AppForm, name: Form">
@@ -32,7 +32,7 @@
                 </form>
 
                 <ul data-binder="class: Updater, name: Results, type: context" class="hidden">
-                    <li data-binder="class: AppItem, type: context" data-binder-tmpl data-jsb-artist="">
+                    <li data-binder="class: AppResult, type: context" data-binder-tmpl>
                         <span data-binder="class: Binder, name: Artist"></span>
                         -
                         <span data-binder="class: Binder, name: Track"></span>
@@ -51,17 +51,17 @@
 
                     <div data-binder="class: AppPlaylist, name: Playlist"></div>
 
-                    <section id="history">
-                        TODO: Slider with the last x playlists generated in form of small player. When click, replace the actual player.
+                    <section id="history" data-binder="class:Appender, name: History">
+                        <div data-binder="class: AppSlide, name: Slide" data-binder-tmpl></div>
                     </section>
                 </section>
 
             </section>
-            <section class="tabs hidden" id="settings">
+            <section class="tabs hidden" id="settings" data-binder="class: Binder, name: Settings, type: context">
                 <h2>
                     Settings
                 </h2>
-                <form data-binder="class: AppSettings, name: Settings" class="ink-form inline">
+                <form data-binder="class: AppSettings, name: Form" class="ink-form inline">
                     Radio-type:
                     <select name="radio">
                         <option value="artist-radio">Artist Radio</option>
@@ -70,7 +70,7 @@
                     </select>
 
                     Playlist-type:
-                    <select name="radio">
+                    <select name="playlist">
                         <option value="basic">Basic</option>
                         <option value="dynamic">Dynamic</option>
                     </select>

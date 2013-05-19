@@ -72,9 +72,6 @@
                     var random_number = Math.floor( Math.random() * max );
                     var seed = models.library.tracks[random_number].artists[0];
 
-                    console.log("seed:");
-                    console.log( seed );
-
                     //get the playlist for the seed
                     this._getPlaylistFromEchonest( seed );
                 }
@@ -94,9 +91,6 @@
             return false;
         },
         _getPlaylistFromEchonest: function( seed ) {
-            console.log( "seed: ");
-            console.log( seed );
-
             if( !seed ) 
                 return;
 
@@ -200,7 +194,6 @@
             return obj;
         }
         , update: function ( data ) {
-            console.log( data );
             //this.Super.prototype.update.call( this, data );
             this.show();
         }
@@ -225,12 +218,18 @@
                 this.currentTracks.push( track );
             }
 
+            //update current player and playlist
             this.Player.update( playlist );
             this.Playlist.update( playlist );
+
+            //update history
+            var history = new Array();
+            history.push( playlist );
+            this.History.update( history );
         }
     });
 
-    define('AppPlayer', Binder, {
+    var AppPlayer = define('AppPlayer', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
 
@@ -279,7 +278,7 @@
         }
     });
 
-    define('AppItem', Binder, { 
+    define('AppResult', Binder, { 
         constructor: function () {
             Binder.apply( this, arguments );
 
@@ -319,10 +318,27 @@
             if ( event )
                 event.preventDefault();
 
-            console.log( "save settings" );
-
             //TODO: set config values from combos and input            
             localStorage.setItem( "config", JSON.stringify( config ) );
+        }
+    });
+
+    define('AppSlide', AppPlayer, { 
+        constructor: function () {
+            Binder.apply( this, arguments );
+
+            //instantiate spotify player with some options
+            this.player = new views.Player();
+            this.player.node.style.height = '100px';
+            this.player.node.style.width = '100px';
+            this.player.node.style.backgroundSize = 'cover';
+
+            on( this, 'click' );
+        }
+        , click: function() {
+            //update current playing with the slide clicked
+            this.context.Player.update( this.player.context );
+            this.context.Playlist.update( this.player.context );
         }
     });
 

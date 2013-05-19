@@ -1,5 +1,5 @@
 #Oscillator
-A personalized and highly customized radio for Spotify.
+A personalized and highly customizable radio for Spotify.
 
 ## Installation                                                                                                                           
 
