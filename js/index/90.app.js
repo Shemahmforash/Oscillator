@@ -16,7 +16,6 @@
     var config;
     if( localStorage.getItem("config") ) {
         config = JSON.parse( localStorage.getItem("config") );
-        console.log( config );
     }
     else {
         //default config
@@ -39,10 +38,6 @@
             history: [],
         };
     }
-    
-    window.onbeforeunload = function(e) {
-        localStorage.setItem( "config", JSON.stringify( config ) );
-    };
 
     /*TAB SWITCHING*/
     models.application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
@@ -57,6 +52,24 @@
             }
         }
         current.classList.remove( 'hidden' );
+    }
+
+    var currentTracks = new Array();
+    //converts a list of tracks to a spotify playlist object
+    function listOfTracks2Playlist( tracks ) {
+        var playlist = new models.Playlist();
+
+        //empty current tracks
+        currentTracks.length = 0; 
+
+        for ( var i=0; i < tracks.length; i++ ) {
+            var track_uri = tracks[i].tracks[0].foreign_id.replace('-WW', '');
+            var track = models.Track.fromURI( track_uri );
+            currentTracks.push( track );
+            playlist.add( track );
+        }
+
+        return playlist;
     }
 
     define('AppForm', Binder, {
@@ -208,21 +221,13 @@
     define('AppController', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
-            this.currentTracks = new Array();
         }
         , update: function ( data ) {
-            var playlist = new models.Playlist();
 
-            //empty current tracks
-            this.currentTracks.length = 0; 
-
-            //add tracks to the playlist obj and to the global array
-            for ( var i=0; i < data.response.songs.length; i++ ) {
-                var track_uri = data.response.songs[i].tracks[0].foreign_id.replace('-WW', '');
-                var track = models.Track.fromURI(track_uri);
-                playlist.add(track);
-                this.currentTracks.push( track );
-            }
+            var playlist = listOfTracks2Playlist( data.response.songs );
+            //add them to config history and set them in storage
+            config.history.push( data.response.songs );
+            localStorage.setItem( "config", JSON.stringify( config ) );
 
             //update current player and playlist
             this.Player.update( playlist );
@@ -252,10 +257,6 @@
 
             //delete current contents and add player to DOM
             $( this.elem ).empty().append( this.player.node );
-
-            //add this new playlist to config history
-            console.log( config );
-            config.history.push( playlist );
         }
     });
 
@@ -281,8 +282,8 @@
             }
 
             var thePlaylist = new models.Playlist( title );
-            for (var i = 0; i < this.context.currentTracks.length; i++) {
-                thePlaylist.add( this.context.currentTracks[i] );
+            for (var i = 0; i < currentTracks.length; i++) {
+                thePlaylist.add( currentTracks[i] );
             }
             return false;
         }
@@ -333,6 +334,39 @@
         }
     });
 
+    define('AppHistory', Binder, {
+        constructor: function () {
+            Binder.apply( this, arguments );
+
+            //auto-update slider from history
+            if( config.history.length ) {
+                for ( var i = 0; i < config.history.length ; i++ ) {
+                    var playlists = new Array();
+                    var playlist = listOfTracks2Playlist( config.history[i] );
+                    playlists.push( playlist );
+                    this.update( playlists );
+                }
+            }
+        }
+        , update: function ( val ) {
+            var obj = this;
+
+            if ( Array.isArray( val ) ) {
+                Array.prototype.forEach.call( val, function ( value, index ) {
+                    var child = obj.attach( value.template || 0 );
+                    if ( value !== void 0 ) {
+                        delete value.template;
+                        child.update( value );
+                    }
+                });
+
+                return obj.children();
+            }
+
+            return update.call( obj, val );
+        }
+    });
+
     define('AppSlide', AppPlayer, { 
         constructor: function () {
             Binder.apply( this, arguments );
@@ -351,7 +385,6 @@
             //update current playing with the slide clicked
             this.context.Player.update( pl );
             this.context.Playlist.update( pl );
-
         }
     });
 
