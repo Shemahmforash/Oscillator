@@ -221,21 +221,33 @@
     define('AppController', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
+            this.seed;
         }
         , update: function ( data ) {
 
-            var playlist = listOfTracks2Playlist( data.response.songs );
-            //add them to config history and set them in storage
-            config.history.push( data.response.songs );
+            var item2config = {
+                    'seed':     this.seed,
+                    'playlist': data.response.songs,
+                };
+
+            //update config with new plailist
+            config.history.push( item2config );
             localStorage.setItem( "config", JSON.stringify( config ) );
+
+            var playlist = listOfTracks2Playlist( data.response.songs );
 
             //update current player and playlist
             this.Player.update( playlist );
             this.Playlist.update( playlist );
 
+            var item2slider = {
+                    'seed':     this.seed,
+                    'playlist': playlist,
+                };
+
             //update history
             var history = new Array();
-            history.push( playlist );
+            history.push( item2slider );
             this.History.update( history );
         }
     });
@@ -342,8 +354,12 @@
             if( config.history.length ) {
                 for ( var i = 0; i < config.history.length ; i++ ) {
                     var playlists = new Array();
-                    var playlist = listOfTracks2Playlist( config.history[i] );
-                    playlists.push( playlist );
+
+                    var item = {};
+                    item.seed     = config.history[i].seed;
+                    item.playlist = listOfTracks2Playlist( config.history[i].playlist );
+
+                    playlists.push( item );
                     this.update( playlists );
                 }
             }
@@ -363,13 +379,15 @@
                 return obj.children();
             }
 
-            return update.call( obj, val );
+            return Binder.prototype.update( obj, val );
         }
     });
 
     define('AppSlide', AppPlayer, { 
         constructor: function () {
             Binder.apply( this, arguments );
+
+            this.seed;
 
             //instantiate spotify player with some options
             this.player = new views.Player();
@@ -379,12 +397,19 @@
 
             on( this, 'click' );
         }
+        , update: function ( data ) {
+            this.seed = data.seed;
+
+            AppPlayer.prototype.update.call( this, data.playlist );
+        }
         , click: function() {
             var pl = this.player.context;
 
             //update current playing with the slide clicked
             this.context.Player.update( pl );
             this.context.Playlist.update( pl );
+            this.context.seed = this.seed;
+            this.context.Title.update( config.echonest.radioType + ' for ' +  this.seed.data.name );
         }
     });
 
