@@ -24,7 +24,7 @@
             echonest: {
                 apiKey: "2FOIUUMCRLFMAWJXT",
                 playlistType: "basic",
-                radioType: "artist-radio"
+                radioType: "song-radio"
                 /*
                 artist-radio - plays songs for the given artists and similar artists
                 song-radio - plays songs similar to the song specified.
@@ -84,12 +84,13 @@
       , submit: function ( event ) {
             if ( event )
                 event.preventDefault();
-
+            //use as seed a random track from library
             if( this.whoSubmitted === 'Random' ) {
                 var max = models.library.tracks.length;
                 if( max ) {
                     var random_number = Math.floor( Math.random() * max );
-                    var seed = models.library.tracks[random_number].artists[0];
+
+                    var seed = models.library.tracks[ random_number ];
 
                     //get the playlist for the seed
                     this._getPlaylistFromEchonest( seed );
@@ -100,6 +101,7 @@
                 }
                 
             }
+            //search spotify api for artists
             else {
                 //search for artists
                 var query = this.Query.elem.value;
@@ -110,32 +112,42 @@
             return false;
         },
         _getPlaylistFromEchonest: function( seed ) {
+            //TODO: show error message
             if( !seed ) 
                 return;
 
-            //make echonest send spotify song ids
-            var artist_id = seed.uri.replace('spotify', 'spotify-WW');
-            var that = this;
-
-            var url = 'http://developer.echonest.com/api/v4/playlist/basic?api_key=' + config.echonest.apiKey + '&callback=?';
-
-             /* Set traditional mode in JS */
-            $.ajaxSetup({traditional: true, cache: true});
-
-            $.getJSON( url,  
-                {
-                    artist_id: artist_id,
+            console.log( seed );
+            var request = {
                     format:'jsonp',
                     limit: true,
-                    results: 20,
-                    type:'artist-radio',
-                    bucket: ['id:spotify-WW', 'tracks']
+                    results: config.playlist.songNumber,
                     /*
                     artist-radio - plays songs for the given artists and similar artists
                     song-radio - plays songs similar to the song specified.
                     genre-radio - plays songs from artists matching the given genre
                     */
-                }
+                    type: config.echonest.radioType,
+                    bucket: ['id:spotify-WW', 'tracks']
+                };
+            //make echonest send spotify song ids
+            if( config.echonest.radioType == 'artist-radio') {
+                request.artist_id = seed.artists[0].uri.replace('spotify', 'spotify-WW');
+            }
+            else if( config.echonest.radioType == 'song-radio') {
+                request.track_id = seed.uri.replace('spotify', 'spotify-WW');
+            }
+
+            console.log( request );
+
+            var that = this;
+
+            var url = 'http://developer.echonest.com/api/v4/playlist/' + config.echonest.playlistType + '?api_key=' + config.echonest.apiKey + '&callback=?';
+
+             /* Set traditional mode in JS */
+            $.ajaxSetup({traditional: true, cache: true});
+
+            $.getJSON( url,  
+                request
                 , function ( data ) {
                     if ( that._checkResponse( data ) ) {
                         that.context.Player.seed = seed;
@@ -240,7 +252,7 @@
             this.Playlist.update( playlist );
 
             //update title 
-            this.Title.value( config.echonest.radioType + ' for ' + this.seed.data.name );
+            this.Title.update( this.seed );
 
             var item2slider = {
                     'seed':     this.seed,
@@ -251,6 +263,26 @@
             var history = new Array();
             history.push( item2slider );
             this.History.update( history );
+        }
+    });
+
+    define('AppTitle', Binder, {
+        constructor: function () {
+            Binder.apply( this, arguments );
+        }
+        , update: function( seed ) {
+            if( !seed )
+                return;
+            switch (config.echonest.radioType) {
+                case "artist-radio":
+                    this.value( config.echonest.radioType + ' for ' +  seed.name );
+                    break;
+                case "song-radio":
+                    this.value( config.echonest.radioType + ' for ' +  seed.artists[0].name + " - " + seed.name );
+                    break;
+                default:
+                    this.value( config.echonest.radioType );
+            }
         }
     });
 
@@ -307,13 +339,13 @@
         constructor: function () {
             Binder.apply( this, arguments );
 
-            this.artistObject;
+            this.trackObject;
 
             on( this, 'click' );
         }
         , click: function() {
             //generate radio-playlist for the artist chosen
-            this.context.context.Form._getPlaylistFromEchonest( this.artistObject );
+            this.context.context.Form._getPlaylistFromEchonest( this.trackObject );
 
             //hide and empty search results
             this.context.hide();
@@ -321,13 +353,13 @@
         , update: function ( data ) {
             var filtered = {};
 
+            //to use as seed for radio
+            this.trackObject = data;
+
             //for presenting on screen
             filtered['Artist'] = data.artists[0].name;
             filtered['Track']  = data.name;
             filtered['Album']  = data.album.name;
-
-            //to use as seed for radio
-            this.artistObject = data.artists[0];
 
             return Binder.prototype.update.call( this, filtered );
         }
@@ -418,7 +450,7 @@
             this.context.context.Player.update( pl );
             this.context.context.Playlist.update( pl );
             this.context.context.seed = this.seed;
-            this.context.context.Title.update( config.echonest.radioType + ' for ' +  this.seed.data.name );
+            this.context.context.Title.update( this.seed );
 
             //set in config history, this one as the now playing
             for ( var i = 0; i < config.history.length ; i++ ) {
