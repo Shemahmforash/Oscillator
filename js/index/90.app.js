@@ -139,9 +139,7 @@
                 , function ( data ) {
                     if ( that._checkResponse( data ) ) {
                         that.context.Player.seed = seed;
-                        that.context.Player.update( data );
-
-                        that.context.Player.Title.value( config.echonest.radioType + ' for ' + seed.data.name );
+                        that.context.Player.update( data.response.songs );
                     }
                     else {
                         that.Error.update("trouble getting results");
@@ -223,22 +221,26 @@
             Binder.apply( this, arguments );
             this.seed;
         }
-        , update: function ( data ) {
+        , update: function ( data, playing ) {
 
             var item2config = {
-                    'seed':     this.seed,
-                    'playlist': data.response.songs,
+                    'seed'    : this.seed,
+                    'playlist': data,
+                    'playing' : playing ? 1 : 0,
                 };
 
             //update config with new plailist
             config.history.push( item2config );
             localStorage.setItem( "config", JSON.stringify( config ) );
 
-            var playlist = listOfTracks2Playlist( data.response.songs );
+            var playlist = listOfTracks2Playlist( data );
 
             //update current player and playlist
             this.Player.update( playlist );
             this.Playlist.update( playlist );
+
+            //update title 
+            this.Title.value( config.echonest.radioType + ' for ' + this.seed.data.name );
 
             var item2slider = {
                     'seed':     this.seed,
@@ -342,6 +344,7 @@
                 event.preventDefault();
 
             //TODO: set config values from combos and input            
+
             localStorage.setItem( "config", JSON.stringify( config ) );
         }
     });
@@ -358,6 +361,7 @@
                     var item = {};
                     item.seed     = config.history[i].seed;
                     item.playlist = listOfTracks2Playlist( config.history[i].playlist );
+                    item.playing  = config.history[i].playing;
 
                     playlists.push( item );
                     this.update( playlists );
@@ -388,6 +392,7 @@
             Binder.apply( this, arguments );
 
             this.seed;
+            this.playing;
 
             //instantiate spotify player with some options
             this.player = new views.Player();
@@ -401,15 +406,27 @@
             this.seed = data.seed;
 
             AppPlayer.prototype.update.call( this, data.playlist );
+
+            //set it as the now playing
+            if( data.playing )
+                this.click();
         }
         , click: function() {
             var pl = this.player.context;
 
             //update current playing with the slide clicked
-            this.context.Player.update( pl );
-            this.context.Playlist.update( pl );
-            this.context.seed = this.seed;
-            this.context.Title.update( config.echonest.radioType + ' for ' +  this.seed.data.name );
+            this.context.context.Player.update( pl );
+            this.context.context.Playlist.update( pl );
+            this.context.context.seed = this.seed;
+            this.context.context.Title.update( config.echonest.radioType + ' for ' +  this.seed.data.name );
+
+            //set in config history, this one as the now playing
+            for ( var i = 0; i < config.history.length ; i++ ) {
+                if( this.seed.data.uri == config.history[i].seed.data.uri ) {
+                    config.history[i].playing = 1;     
+                }
+            }
+            localStorage.setItem( "config", JSON.stringify( config ) );
         }
     });
 
