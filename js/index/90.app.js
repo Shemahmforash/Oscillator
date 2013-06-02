@@ -116,7 +116,6 @@
             if( !seed ) 
                 return;
 
-            console.log( seed );
             var request = {
                     format:'jsonp',
                     limit: true,
@@ -136,8 +135,6 @@
             else if( config.echonest.radioType == 'song-radio') {
                 request.track_id = seed.uri.replace('spotify', 'spotify-WW');
             }
-
-            console.log( request );
 
             var that = this;
 
@@ -235,6 +232,7 @@
         }
         , update: function ( data, playing ) {
 
+            this.seed.data.radioType = config.echonest.radioType;
             var item2config = {
                     'seed'    : this.seed,
                     'playlist': data,
@@ -273,15 +271,14 @@
         , update: function( seed ) {
             if( !seed )
                 return;
-            switch (config.echonest.radioType) {
+
+            switch ( seed.data.radioType ) {
                 case "artist-radio":
-                    this.value( config.echonest.radioType + ' for ' +  seed.name );
+                    this.value( 'artist-radio for ' +  seed.data.artists[0].name );
                     break;
                 case "song-radio":
-                    this.value( config.echonest.radioType + ' for ' +  seed.artists[0].name + " - " + seed.name );
+                    this.value( 'song-radio for ' +  seed.data.artists[0].name + " - " + seed.data.name );
                     break;
-                default:
-                    this.value( config.echonest.radioType );
             }
         }
     });
