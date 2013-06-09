@@ -23,7 +23,7 @@
             //echonest api parameters
             echonest: {
                 apiKey: "2FOIUUMCRLFMAWJXT",
-                playlistType: "basic",
+                playlistType: "static",
                 radioType: "song-radio"
                 /*
                 artist-radio - plays songs for the given artists and similar artists
@@ -178,9 +178,9 @@
             search.observe(models.EVENT.CHANGE, function() {
                 var results = search.tracks;
                 
+                that.context.Results.empty();
                 that.context.Results.update( results ); 
                 that.context.Results.show();
-
             });
 
             search.appendNext();
@@ -229,8 +229,11 @@
         constructor: function () {
             Binder.apply( this, arguments );
             this.seed;
+
+            this.hide();
         }
         , update: function ( data, playing ) {
+            this.show();
 
             this.seed.data.radioType = config.echonest.radioType;
             var item2config = {
@@ -329,6 +332,35 @@
                 thePlaylist.add( currentTracks[i] );
             }
             return false;
+        }
+    });
+
+    var AppResults = define('AppResults', Binder, {
+        constructor: function () {
+            Binder.apply( this, arguments );
+        }
+        , update: function ( val ) {
+            var obj = this;
+
+            if ( Array.isArray( val ) ) {
+                Array.prototype.forEach.call( val, function ( value, index ) {
+                    var child = obj.attach( value.template || 0 );
+                    if ( value !== void 0 ) {
+                        delete value.template;
+                        child.update( value );
+                    }
+                });
+
+                return obj.children();
+            }
+
+            return Binder.prototype.update( obj, val );
+        }
+        , empty: function() {
+            var children = this.children(); 
+            for ( var i = 0; i < children.length ; i++ ) {
+                $( children[i].elem ).empty();
+            }
         }
     });
 
