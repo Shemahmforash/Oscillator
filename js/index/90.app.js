@@ -24,12 +24,10 @@
             echonest: {
                 apiKey: "2FOIUUMCRLFMAWJXT",
                 playlistType: "static",
-                radioType: "song-radio"
-                /*
-                artist-radio - plays songs for the given artists and similar artists
-                song-radio - plays songs similar to the song specified.
-                genre-radio - plays songs from artists matching the given genre
-                */
+                radioType: "song-radio",//[artist-radio, song-radio, genre-radio]
+                variety: 1, //[0,1], default=0.5
+                distribution: "wandering", //focused || wandering, default=focused
+                mood: "relaxing", //[happy, angry, sag, relaxing, excited]
             },
             playlist: {
                suffix: "#oscillator", 
