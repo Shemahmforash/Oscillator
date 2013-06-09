@@ -229,8 +229,6 @@
         constructor: function () {
             Binder.apply( this, arguments );
             this.seed;
-
-            this.hide();
         }
         , update: function ( data, playing ) {
             this.show();
@@ -315,6 +313,9 @@
    
             //empty and add list view for the player
             $( this.elem ).empty().append( list.node );
+
+            //show save playlist button
+            this.context.Save.show();
         }
     });
 
