@@ -1,12 +1,99 @@
-.selected { font-weight: bold }
-.hidden   { display: none }
-
-[data-binder-tmpl] { display: none }
-
-#results {
-     display:none;
-}
-
 .selected {
-     display:block;
+	font-weight	: bold;
+	display		: block;
+}
+[data-binder-tmpl],
+#results,
+.hidden   {
+	display	: none;
+}
+/* General */
+html {
+	background-color	: #333;
+}
+body {
+	background-color	: #333;
+	text-shadow			: none;
+	float				: left;
+	width				: 100%;
+	color				: #EFEFEF;
+}
+h1 {
+	color		: #FFF;
+}
+body > header {
+	float			: left;
+	clear			: both;
+	width			: 100%;
+	padding			: 10px 0;
+}
+body > header img {
+	height		: 50px;
+	margin-left	: 10px;
+	display		: inline-block;
+}
+body > header h1 {
+	margin			: 0 0 0 10px;
+	font-size		: 35px;
+	line-height		: 50px;
+	display			: inline-block;
+	vertical-align	: top;
+}
+body > section {
+	float			: left;
+	padding			: 0 10px;
+}
+/* Home tab */
+#home > form,
+#home > ul,
+#home > section {
+	float			: left;
+	clear			: both;
+	border-top		: 1px dotted #555;
+	padding			: 10px 0;
+}
+#home > form > fieldset,
+#home > form > button {
+	float		: left;
+	margin-top	: 10px;
+}
+#home > form > button {
+	margin-left	: 20px;
+}
+section.player {
+	position : relative;
+}
+section.player > div.player {
+	position	: absolute;
+	left		: 0;
+}
+section.player > div.player button {
+	margin-top	: 10px;
+}
+section.player > div.player div:empty + button {
+	display		: none;
+}
+div.playlist:empty {
+	display		: none;
+}
+div.playlist {
+	float		: right;
+	margin-left	: 140px;
+	min-height	: 180px;
+}
+div:empty + #history {
+	margin-top	: -26px;
+}
+#history {
+	float		: left;
+	clear		: left;
+	border-top	: 1px dotted #555;
+	margin-top	: 10px;
+}
+#history h1 {
+	margin-top	: 10px;
+}
+#history > div {
+	float	: left;
+	margin	: 0 10px 10px 0;
 }

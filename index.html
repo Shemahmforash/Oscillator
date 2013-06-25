@@ -10,105 +10,80 @@
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
-
         <header>
-            <img src="img/logo.png" width="50" />
-            <h1> Oscillator</h1>
+            <img src="img/logo.png" alt="Oscillator" />
+            <h1>Oscillator</h1>
         </header>
-
-        <section class="main">
-            <section id="home" class="tabs" data-binder="class: Binder, name: Home, type: context">
-                <p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
-
-                <form class="ink-form inline" data-binder="class: AppForm, name: Form">
-                    <div class="control">
-                        <fieldset>
-                            <input type="text" data-binder="class: Binder, name: Query"/>
-                            <button class="sp-button sp-primary" name="search" type="submit" data-binder="class:AppButton, name: Search">Search</button>
-                        </fieldset>
-                        <button class="sp-button sp-primary" name="random" type="submit" data-binder="class:AppButton, name: Random">Random Song</button>
-                        <span data-binder="class: AppError, delay: 1000" class="hidden"></span>
-                    </div>
-                </form>
-
-                <ul data-binder="class: AppResults, name: Results, type: context" class="hidden">
-                    <li data-binder="class: AppResult, type: context" data-binder-tmpl>
-                        <span data-binder="class: Binder, name: Artist"></span>
-                        -
-                        <span data-binder="class: Binder, name: Track"></span>
-                        (
-                        <span data-binder="class: Binder, name: Album"></span>
-                        )
-                    </li>
-                </ul>
-
-                <section data-binder="class: AppController, name: Player, type: Context">
-                    <h1 data-binder="class: AppTitle, name: Title"></h1>
-
-                    <div data-binder="class: AppPlayer, name: Player"></div>
-
-                    <button type="button" data-binder="class: AppSavePlaylist, name: Save" class="hidden">Save Playlist</button>
-
-                    <div data-binder="class: AppPlaylist, name: Playlist"></div>
-
-                    <section id="history" data-binder="class:AppHistory, name: History, type: Context">
-                        <div data-binder="class: AppSlide, name: Slide" data-binder-tmpl></div>
-                    </section>
-                </section>
-
-            </section>
-            <section class="tabs hidden" id="settings" data-binder="class: Binder, name: Settings, type: context">
-                <h2>
-                    Settings
-                </h2>
-                <form data-binder="class: AppSettings, name: Form" class="ink-form inline">
-                    <fieldset>
-                        <legend>General configuration</legend>
-
-                        <label for="radio-type">Radio-type</label>
-                        <select name="radio">
-                            <option value="artist-radio">Artist Radio</option>
-                            <option value="track-radio" >Track Radio</option>
-                            <option value="genre-radio" >Genre Radio</option>
-                        </select>
-
-                        <label for="playlist-type">Playlist-type</label>
-                        <select name="playlist">
-                            <option value="basic">Basic</option>
-                            <option value="dynamic">Dynamic</option>
-                        </select>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>Advanced configuration</legend>
-
-                        <label for="number">Song number</label>
-                        <input type="text" name="number" />
-
-                        <label for="start">Start the radio with the seed chosen</label>
-                        <input type="checkbox" name="artistrepetition">
-
-                        <label for="artist-repetition">Avoid artist repetition</label>
-                        <input type="checkbox" name="artist-repetition">
-
-                        <label for="track-repetition">Avoid track repetition</label>
-                        <input type="checkbox" name="track-repetition">
-
-                    </fieldset>
-
-                    <button class="sp-button sp-primary" name="save" type="submit">Save Settings</button>
-                </form>
-            </section>
-        </section>
-
+		<section id="home" class="tabs" data-binder="class: Binder, name: Home, type: context">
+			<form data-binder="class: AppForm, name: Form">
+				<p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
+				<fieldset>
+					<input type="text" data-binder="class: Binder, name: Query"/>
+					<button class="sp-button sp-primary" name="search" type="submit" data-binder="class:AppButton, name: Search">Search</button>
+				</fieldset>
+				<button class="sp-button sp-primary" name="random" type="submit" data-binder="class:AppButton, name: Random">Random Song</button>
+				<span data-binder="class: AppError, delay: 1000" class="hidden"></span>
+			</form>
+			<ul data-binder="class: AppResults, name: Results, type: context" class="hidden">
+				<li data-binder="class: AppResult, type: context" data-binder-tmpl>
+					<span data-binder="class: Binder, name: Artist"></span>
+					-
+					<span data-binder="class: Binder, name: Track"></span>
+					(
+					<span data-binder="class: Binder, name: Album"></span>
+					)
+				</li>
+			</ul>
+			<section class="player" data-binder="class: AppController, name: Player, type: Context">
+				<h1 data-binder="class: Binder, name: Title"></h1>
+				<div class="player">
+					<div data-binder="class: AppPlayer, name: Player"></div>
+					<button class="sp-button sp-primary" type="button" data-binder="class: AppSavePlaylist, name: Save">Save Playlist</button>		
+				</div>
+				<div class="playlist" data-binder="class: AppPlaylist, name: Playlist"></div>
+				<section id="history" data-binder="class:AppHistory, name: History, type: Context">
+					<h1>Previous playlists</h1>
+					<div data-binder="class: AppSlide, name: Slide" data-binder-tmpl></div>
+				</section>
+			</section>
+		</section>
+		<section class="tabs hidden" id="settings" data-binder="class: Binder, name: Settings, type: context">
+			<h1>Settings</h1>
+			<form data-binder="class: AppSettings, name: Form" class="ink-form inline">
+				<fieldset>
+					<legend>General configuration</legend>
+					<label for="radio-type">Radio-type</label>
+					<select name="radio">
+						<option value="artist-radio">Artist Radio</option>
+						<option value="track-radio" >Track Radio</option>
+						<option value="genre-radio" >Genre Radio</option>
+					</select>
+					<label for="playlist-type">Playlist-type</label>
+					<select name="playlist">
+						<option value="basic">Basic</option>
+						<option value="dynamic">Dynamic</option>
+					</select>
+				</fieldset>
+				<fieldset>
+					<legend>Advanced configuration</legend>
+					<label for="number">Song number</label>
+					<input type="text" name="number" />
+					<label for="start">Start the radio with the seed chosen</label>
+					<input type="checkbox" name="artistrepetition">
+					<label for="artist-repetition">Avoid artist repetition</label>
+					<input type="checkbox" name="artist-repetition">
+					<label for="track-repetition">Avoid track repetition</label>
+					<input type="checkbox" name="track-repetition">
+				</fieldset>
+				<button class="sp-button sp-primary" name="save" type="submit">Save Settings</button>
+			</form>
+		</section>
         <script src="/js/3rdparty/jquery.min.js"></script> 
         <script src="/js/index/10.binder.js"></script> 
         <script src="/js/index/11.binderx.js"></script> 
         <script src="/js/index/90.app.js"></script> 
-
         <script type="text/javascript">        
             app = new Binder( document.body );
         </script>
-
     </body>
 </html>

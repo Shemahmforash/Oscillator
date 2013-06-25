@@ -288,8 +288,6 @@
 
             //instantiate spotify player with some options
             this.player = new views.Player();
-            this.player.node.style.height = '300px';
-            this.player.node.style.width = '300px';
             this.player.node.style.backgroundSize = 'cover';
         }
         , update: function ( playlist ) {
