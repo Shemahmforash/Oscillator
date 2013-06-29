@@ -53,7 +53,7 @@
 				<fieldset>
 					<legend>General configuration</legend>
 					<label for="radio-type">Radio-type</label>
-					<select name="radio">
+					<select name="radio-type">
 						<option value="artist-radio">Artist Radio</option>
 						<option value="track-radio" >Track Radio</option>
 						<option value="genre-radio" >Genre Radio</option>
@@ -66,14 +66,14 @@
 				</fieldset>
 				<fieldset>
 					<legend>Advanced configuration</legend>
-					<label for="number">Song number</label>
-					<input type="text" name="number" />
+					<label for="songNumber">Song number</label>
+					<input type="text" name="songNumber" />
 					<label for="start">Start the radio with the seed chosen</label>
-					<input type="checkbox" name="artistrepetition" style="-webkit-appearance: checkbox !important;">
-					<label for="artist-repetition">Avoid artist repetition</label>
-					<input type="checkbox" name="artist-repetition" style="-webkit-appearance: checkbox !important;">
-					<label for="track-repetition">Avoid track repetition</label>
-					<input type="checkbox" name="track-repetition" style="-webkit-appearance: checkbox !important;">
+					<input type="checkbox" name="startWithSeed" style="-webkit-appearance: checkbox !important;">
+					<label for="artist-repetition">Allow artist repetition</label>
+					<input type="checkbox" name="artistRepetition" style="-webkit-appearance: checkbox !important;">
+					<label for="track-repetition">Allow track repetition</label>
+					<input type="checkbox" name="trackRepetition" style="-webkit-appearance: checkbox !important;">
 				</fieldset>
 				<button class="sp-button sp-primary" name="save" type="submit">Save Settings</button>
 			</form>

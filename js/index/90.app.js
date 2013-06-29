@@ -31,7 +31,12 @@
             },
             playlist: {
                suffix: "#oscillator", 
-               songNumber: 20
+                songNumber: 20
+            },
+            filters: {
+                startWithSeed: 1,
+                artistRepetition: 1,
+                trackRepetition: 0,
             },
             history: [],
         };
@@ -395,15 +400,43 @@
         constructor: function () {
             Binder.apply( this, arguments );
 
+            //TODO: auto-fill data with config values
+
             on( this, 'submit' );
         }
         , submit: function( event ) {
             if ( event )
                 event.preventDefault();
 
-            //TODO: set config values from combos and input            
+            //get values from form
+            var data = $( this.elem ).serializeArray();
+            var structured = new Object();
+            for( var i in data ) {
+                structured[ data[i].name ] = data[i].value;
+            }
 
+            if( structured["radio-type"]) {
+                config.echonest.radioType = structured["radio-type"];
+            }
+            if( structured["songNumber"] ) {
+                var number = structured["songNumber"];
+                if( number.match(/\d+/) )
+                    config.playlist.songNumber = number;
+            }
+            //filters
+            for( var name in config.filters ) {
+                var value = config.filters[ name ];
+
+                if( !value && structured[name] !== undefined )
+                    config.filters[ name ] = 1;
+                if( value && structured[name] === undefined )
+                    config.filters[ name ] = 0;
+            }
+
+            //and set values in config
             localStorage.setItem( "config", JSON.stringify( config ) );
+
+            //TODO: show message save completed
         }
     });
 
@@ -426,6 +459,7 @@
                 }
                 this.show();
             }
+            this.root.config = config;
         }
         , update: function ( val ) {
             var obj = this;
