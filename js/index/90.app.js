@@ -30,7 +30,7 @@
                 mood: "relaxing", //[happy, angry, sag, relaxing, excited]
             },
             playlist: {
-               suffix: "#oscillator", 
+                suffix: "#oscillator", 
                 songNumber: 20
             },
             filters: {
@@ -48,6 +48,9 @@
         var args = models.application.arguments;
 
         var current  = document.getElementById(args[0]);
+        if(!current)
+            return;
+
         var tabs     = document.getElementsByClassName('tabs');
         for (var i = 0, l = tabs.length; i < l; i++){
             if (current != tabs[i]) {
@@ -400,9 +403,23 @@
         constructor: function () {
             Binder.apply( this, arguments );
 
-            //TODO: auto-fill data with config values
-
             on( this, 'submit' );
+
+            //auto-fill data with config values
+            $( this.elem ).find('input, select').each(function() {
+                var name  = $(this).attr('name');
+                var value = $(this).val();
+
+
+                if( name == "radio-type" )
+                    $(this).val(config.echonest.radioType);
+                if( name == "songNumber" )
+                    $(this).val(config.playlist.songNumber);
+                else {
+                    if( config.filters[ name ] )    
+                        $(this).attr('checked','checked')
+                }
+            });
         }
         , submit: function( event ) {
             if ( event )
