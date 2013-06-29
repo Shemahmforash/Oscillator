@@ -474,7 +474,7 @@
             if( data.playing )
                 this.click();
         }
-        , click: function() {
+        , click: function ( evt ) {
             var pl = this.player.context;
 
             //update current playing with the slide clicked
@@ -490,6 +490,22 @@
                 }
             }
             localStorage.setItem( "config", JSON.stringify( config ) );
+        }
+        , delete: function () {
+            //remove this item from config history
+            for ( var i = 0; i < config.history.length ; i++ ) {
+                if( this.seed.data.uri == config.history[i].seed.data.uri ) {
+                    config.history.splice(i,1);
+                }
+            }
+            localStorage.setItem( "config", JSON.stringify( config ) );
+
+            //after removing all slides, hide history
+            if( this.context.children().length == 1 )
+                this.context.hide();
+
+            //remove this slide from slider
+            this.context.dettach( this );
         }
     });
 
