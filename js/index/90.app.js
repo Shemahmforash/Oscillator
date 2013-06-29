@@ -424,6 +424,7 @@
                     playlists.push( item );
                     this.update( playlists );
                 }
+                this.show();
             }
         }
         , update: function ( val ) {
@@ -464,6 +465,10 @@
             this.seed = data.seed;
 
             AppPlayer.prototype.update.call( this, data.playlist );
+
+            //show history slider
+            if( data )
+                this.context.show();
 
             //set it as the now playing
             if( data.playing )
