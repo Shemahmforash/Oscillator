@@ -78,6 +78,42 @@
         return playlist;
     }
 
+    function filterSongs( songs, seed ) {
+        var artists = new Array();
+        var tracks  = new Array();
+
+        var filteredSongs = new Array();
+        for ( var i = 0; i < songs.length; i++ ) {
+            var isAllowed = 1;
+
+            //check for artist duplication
+            if( !config.filters.artistRepetition ) {
+                if( artists.indexOf( songs[i].artist_id ) == -1 ) {
+                    artists.push( songs[i].artist_id );
+                    isAllowed = 1;
+                }
+                else
+                    isAllowed = 0;
+            }
+
+            //check track duplications (unless track flagged in artist repetition check)
+            if( isAllowed && !config.filters.trackRepetition ) {
+                if( tracks.indexOf( songs[i].tracks[0].id ) == -1 ) {
+                    tracks.push( songs[i].tracks[0].id );
+                    isAllowed = 1;
+                }
+                else
+                    isAllowed = 0;
+            }
+
+            //add song to filtered array if it is flagged as accepted
+            if( isAllowed )
+                filteredSongs.push( songs[i] );
+        }
+
+        return filteredSongs;
+    }
+
     define('AppForm', Binder, {
         constructor: function () {
             this.isContext = true;
@@ -153,8 +189,12 @@
                 request
                 , function ( data ) {
                     if ( that._checkResponse( data ) ) {
+
+                        //filter songs and update the player/playlist
+                        var songs = filterSongs( data.response.songs, seed );
+
                         that.context.Player.seed = seed;
-                        that.context.Player.update( data.response.songs );
+                        that.context.Player.update( songs );
                     }
                     else {
                         that.Error.update("trouble getting results");
@@ -427,8 +467,6 @@
             for( var i in data ) {
                 structured[ data[i].name ] = data[i].value;
             }
-
-            console.log( structured );
 
             if( structured["radio-type"]) {
                 config.echonest.radioType = structured["radio-type"];
