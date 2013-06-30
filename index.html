@@ -49,31 +49,31 @@
 		</section>
 		<section class="tabs hidden" id="settings" data-binder="class: Binder, name: Settings, type: context">
 			<h1>Settings</h1>
-			<form data-binder="class: AppSettings, name: Form" class="ink-form inline">
+			<form data-binder="class: AppSettings, name: Form">
 				<fieldset>
 					<legend>General configuration</legend>
 					<label for="radio-type">Radio-type</label>
-					<select name="radio-type">
-						<option value="artist-radio">Artist Radio</option>
-						<option value="track-radio" >Track Radio</option>
-						<option value="genre-radio" >Genre Radio</option>
-					</select>
-					<label for="playlist-type">Playlist-type</label>
-					<select name="playlist">
-						<option value="basic">Basic</option>
-						<option value="dynamic">Dynamic</option>
-					</select>
+                    <input type="radio" name="radio-type" value="artist-radio" style="-webkit-appearance:radio">Artist Radio
+                    <input type="radio" name="radio-type" value="song-radio" style="-webkit-appearance:radio">Song Radio
+                    <input type="radio" name="radio-type" value="genre-radio" style="-webkit-appearance:radio" disabled="disabled">Genre Radio
+
+                    <br/>
+
+					<label for="playlist">Playlist-type</label>
+                    <input type="radio" name="playlist" value="basic" style="-webkit-appearance:radio">Basic
+                    <input type="radio" name="playlist" value="static" style="-webkit-appearance:radio">Static
+                    <input type="radio" name="playlist" value="dynamic" style="-webkit-appearance:radio" disabled="disaled">Dynamic
 				</fieldset>
 				<fieldset>
 					<legend>Advanced configuration</legend>
 					<label for="songNumber">Song number</label>
 					<input type="text" name="songNumber" size="2" maxlength="2" />
 					<label for="start">Start the radio with the seed chosen</label>
-					<input type="checkbox" name="startWithSeed" style="-webkit-appearance: checkbox !important;">
+					<input type="checkbox" name="startWithSeed" value="startWithSeed"style="-webkit-appearance: checkbox !important;">
 					<label for="artist-repetition">Allow artist repetition</label>
-					<input type="checkbox" name="artistRepetition" style="-webkit-appearance: checkbox !important;">
+					<input type="checkbox" name="artistRepetition" value="artistRepetition" style="-webkit-appearance: checkbox !important;">
 					<label for="track-repetition">Allow track repetition</label>
-					<input type="checkbox" name="trackRepetition" style="-webkit-appearance: checkbox !important;">
+					<input type="checkbox" name="trackRepetition" value="trackRepetition" style="-webkit-appearance: checkbox !important;">
 				</fieldset>
 				<button class="sp-button sp-primary" name="save" type="submit">Save Settings</button>
 			</form>

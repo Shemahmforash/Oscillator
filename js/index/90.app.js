@@ -406,19 +406,15 @@
             on( this, 'submit' );
 
             //auto-fill data with config values
-            $( this.elem ).find('input, select').each(function() {
+            $(this.elem).find('input:radio').val(
+                    [config.echonest.radioType, config.echonest.playlistType]
+                );
+            $(this.elem).find('input:text').val(config.playlist.songNumber);
+
+            $( this.elem ).find('input:checkbox').each(function() {
                 var name  = $(this).attr('name');
-                var value = $(this).val();
-
-
-                if( name == "radio-type" )
-                    $(this).val(config.echonest.radioType);
-                if( name == "songNumber" )
-                    $(this).val(config.playlist.songNumber);
-                else {
-                    if( config.filters[ name ] )    
-                        $(this).attr('checked','checked')
-                }
+                if( config.filters[ name ] )    
+                    $(this).attr('checked','checked')
             });
         }
         , submit: function( event ) {
@@ -431,6 +427,8 @@
             for( var i in data ) {
                 structured[ data[i].name ] = data[i].value;
             }
+
+            console.log( structured );
 
             if( structured["radio-type"]) {
                 config.echonest.radioType = structured["radio-type"];
