@@ -35,6 +35,7 @@
             },
             filters: {
                 startWithSeed: 1,
+                //avoid artist and track repetition?
                 artistRepetition: 1,
                 trackRepetition: 0,
             },
@@ -69,8 +70,13 @@
         currentTracks.length = 0; 
 
         for ( var i=0; i < tracks.length; i++ ) {
-            var track_uri = tracks[i].tracks[0].foreign_id.replace('-WW', '');
-            var track = models.Track.fromURI( track_uri );
+            if( tracks[i].artist_id ) {
+                var track_uri = tracks[i].tracks[0].foreign_id.replace('-WW', '');
+                var track = models.Track.fromURI( track_uri );
+            }
+            else//accept spotify tracks (like a seed, for instance)
+                track = tracks[i];
+
             currentTracks.push( track );
             playlist.add( track );
         }
@@ -79,17 +85,33 @@
     }
 
     function filterSongs( songs, seed ) {
+        console.log(songs, seed);
         var artists = new Array();
         var tracks  = new Array();
 
         var filteredSongs = new Array();
+
+        //add seed to the beginning of playlist
+        if( config.filters.startWithSeed )
+            songs.unshift( seed );
+
         for ( var i = 0; i < songs.length; i++ ) {
             var isAllowed = 1;
 
             //check for artist duplication
-            if( !config.filters.artistRepetition ) {
-                if( artists.indexOf( songs[i].artist_id ) == -1 ) {
-                    artists.push( songs[i].artist_id );
+            if( config.filters.artistRepetition ) {
+                var name;
+                //spotify track object
+                if( songs[i].data ) {
+                    name = songs[i].data.artists[0].name;
+                }
+                //regular echonest object
+                else {
+                    name  = songs[i].artist_name;
+                }
+
+                if( artists.indexOf( name ) == -1 ) {
+                    artists.push( name );
                     isAllowed = 1;
                 }
                 else
@@ -97,9 +119,20 @@
             }
 
             //check track duplications (unless track flagged in artist repetition check)
-            if( isAllowed && !config.filters.trackRepetition ) {
-                if( tracks.indexOf( songs[i].tracks[0].id ) == -1 ) {
-                    tracks.push( songs[i].tracks[0].id );
+            if( isAllowed && config.filters.trackRepetition ) {
+                var track_id;
+
+                //spotify track object
+                if( songs[i].data ) {
+                    track_id = songs[i].uri.replace('-WW', '');
+                }
+                //regular echonest object
+                else {
+                    track_id = songs[i].tracks[0].id;
+                }
+
+                if( tracks.indexOf( track_id ) == -1 ) {
+                    tracks.push( track_id );
                     isAllowed = 1;
                 }
                 else
@@ -110,6 +143,8 @@
             if( isAllowed )
                 filteredSongs.push( songs[i] );
         }
+
+        console.log( filteredSongs );
 
         return filteredSongs;
     }
@@ -499,6 +534,7 @@
 
             //auto-update slider from history
             if( config.history.length ) {
+                console.log( config.history );
                 for ( var i = 0; i < config.history.length ; i++ ) {
                     var playlists = new Array();
 
