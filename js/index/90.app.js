@@ -70,22 +70,25 @@
         currentTracks.length = 0; 
 
         for ( var i=0; i < tracks.length; i++ ) {
+            var uri;
             if( tracks[i].artist_id ) {
-                var track_uri = tracks[i].tracks[0].foreign_id.replace('-WW', '');
-                var track = models.Track.fromURI( track_uri );
+                uri = tracks[i].tracks[0].foreign_id.replace('-WW', '');
             }
             else//accept spotify tracks (like a seed, for instance)
-                track = tracks[i];
+                uri = tracks[i].data.uri;
 
-            currentTracks.push( track );
-            playlist.add( track );
+            if( uri ) {
+                var track = models.Track.fromURI( uri );
+
+                currentTracks.push( track );
+                playlist.add( track );
+            }
         }
 
         return playlist;
     }
 
     function filterSongs( songs, seed ) {
-        console.log(songs, seed);
         var artists = new Array();
         var tracks  = new Array();
 
@@ -143,8 +146,6 @@
             if( isAllowed )
                 filteredSongs.push( songs[i] );
         }
-
-        console.log( filteredSongs );
 
         return filteredSongs;
     }
@@ -534,7 +535,6 @@
 
             //auto-update slider from history
             if( config.history.length ) {
-                console.log( config.history );
                 for ( var i = 0; i < config.history.length ; i++ ) {
                     var playlists = new Array();
 
