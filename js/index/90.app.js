@@ -13,34 +13,35 @@
     var views = sp.require('$api/views');
 
     //oscillator config values
+    var defaultConfig = {
+        //echonest api parameters
+        echonest: {
+            apiKey: "2FOIUUMCRLFMAWJXT",
+            playlistType: "static",
+            radioType: "song-radio",//[artist-radio, song-radio, genre-radio]
+            variety: 1, //[0,1], default=0.5
+            distribution: "wandering", //focused || wandering, default=focused
+            mood: "relaxing", //[happy, angry, sag, relaxing, excited]
+        },
+        playlist: {
+            suffix: "#oscillator", 
+            songNumber: 20
+        },
+        filters: {
+            startWithSeed: 1,
+            //avoid artist and track repetition?
+            artistRepetition: 1,
+            trackRepetition: 0,
+        },
+        history: [],
+    };
     var config;
     if( localStorage.getItem("config") ) {
         config = JSON.parse( localStorage.getItem("config") );
     }
     else {
-        //default config
-        config = {
-            //echonest api parameters
-            echonest: {
-                apiKey: "2FOIUUMCRLFMAWJXT",
-                playlistType: "static",
-                radioType: "song-radio",//[artist-radio, song-radio, genre-radio]
-                variety: 1, //[0,1], default=0.5
-                distribution: "wandering", //focused || wandering, default=focused
-                mood: "relaxing", //[happy, angry, sag, relaxing, excited]
-            },
-            playlist: {
-                suffix: "#oscillator", 
-                songNumber: 20
-            },
-            filters: {
-                startWithSeed: 1,
-                //avoid artist and track repetition?
-                artistRepetition: 1,
-                trackRepetition: 0,
-            },
-            history: [],
-        };
+        //copy default config obj
+        jQuery.extend(config, defaultConfig);
     }
 
     /*TAB SWITCHING*/
@@ -416,6 +417,19 @@
         }
     });
 
+    define('AppResetSettings', AppButton, {
+        click: function () { 
+            //reset config values to default ones (also clears history)
+            jQuery.extend(config,defaultConfig);
+            localStorage.setItem( "config", JSON.stringify( config ) );
+
+            //refresh settings form values
+            this.context.Form.autoload();
+
+            return false;
+        }
+    });
+
     var AppResults = define('AppResults', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
@@ -481,6 +495,9 @@
 
             on( this, 'submit' );
 
+            this.autoload();
+        }
+        , autoload: function() {
             //auto-fill data with config values
             $(this.elem).find('input:radio').val(
                     [config.echonest.radioType, config.echonest.playlistType]
@@ -492,6 +509,7 @@
                 if( config.filters[ name ] )    
                     $(this).attr('checked','checked')
             });
+            
         }
         , submit: function( event ) {
             if ( event )
