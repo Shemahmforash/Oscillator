@@ -66,14 +66,26 @@
 				</fieldset>
 				<fieldset>
 					<legend>Advanced configuration</legend>
+
 					<label for="songNumber">Song number</label>
 					<input type="text" name="songNumber" size="2" maxlength="2" />
+
+                    <br/>
+
 					<label for="start">Start the radio with the seed chosen</label>
-					<input type="checkbox" name="startWithSeed" value="startWithSeed"style="-webkit-appearance: checkbox !important;">
+					<input type="checkbox" name="startWithSeed" value="startWithSeed" style="-webkit-appearance: checkbox !important;">
+
 					<label for="artist-repetition">Avoid artist repetition</label>
 					<input type="checkbox" name="artistRepetition" value="artistRepetition" style="-webkit-appearance: checkbox !important;">
+
 					<label for="track-repetition">Avoid track repetition</label>
 					<input type="checkbox" name="trackRepetition" value="trackRepetition" style="-webkit-appearance: checkbox !important;">
+
+                    <br/>
+
+					<label for="playlist">Distribution</label>
+                    <input type="radio" name="distribution" value="wandering" style="-webkit-appearance:radio">Wandering
+                    <input type="radio" name="distribution" value="focused" style="-webkit-appearance:radio">Focused
 				</fieldset>
 				<button class="sp-button sp-primary" name="save" type="submit">Save Settings</button>
 			</form>

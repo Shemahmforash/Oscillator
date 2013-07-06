@@ -199,15 +199,12 @@
                     format:'jsonp',
                     limit: true,
                     results: config.playlist.songNumber,
-                    /*
-                    artist-radio - plays songs for the given artists and similar artists
-                    song-radio - plays songs similar to the song specified.
-                    genre-radio - plays songs from artists matching the given genre
-                    */
                     type: config.echonest.radioType,
+                    variety: config.echonest.variety,
+                    distribution: config.echonest.distribution,
+                    //make echonest send spotify song ids
                     bucket: ['id:spotify-WW', 'tracks']
                 };
-            //make echonest send spotify song ids
             if( config.echonest.radioType == 'artist-radio') {
                 request.artist_id = seed.artists[0].uri.replace('spotify', 'spotify-WW');
             }
@@ -215,13 +212,13 @@
                 request.track_id = seed.uri.replace('spotify', 'spotify-WW');
             }
 
-            var that = this;
 
             var url = 'http://developer.echonest.com/api/v4/playlist/' + config.echonest.playlistType + '?api_key=' + config.echonest.apiKey + '&callback=?';
 
              /* Set traditional mode in JS */
             $.ajaxSetup({traditional: true, cache: true});
 
+            var that = this;
             $.getJSON( url,  
                 request
                 , function ( data ) {
@@ -410,6 +407,7 @@
             }
 
             var thePlaylist = new models.Playlist( title );
+            //TODO: use the spotify playlist. When doing this, delete currentTracks globalArray.
             for (var i = 0; i < currentTracks.length; i++) {
                 thePlaylist.add( currentTracks[i] );
             }
@@ -500,7 +498,7 @@
         , autoload: function() {
             //auto-fill data with config values
             $(this.elem).find('input:radio').val(
-                    [config.echonest.radioType, config.echonest.playlistType]
+                    [config.echonest.radioType, config.echonest.playlistType, config.echonest.distribution ]
                 );
             $(this.elem).find('input:text').val(config.playlist.songNumber);
 
