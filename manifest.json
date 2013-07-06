@@ -1,4 +1,7 @@
 {
+    "AcceptedLinkTypes": [
+        "track"
+    ],
 	"AppDescription": {
 		"en": "A personalized and highly customizable radio for spotify"
 	},

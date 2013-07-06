@@ -41,7 +41,7 @@
     }
     else {
         //copy default config obj
-        jQuery.extend(config, defaultConfig);
+        config = jQuery.extend(true, config, defaultConfig);
     }
 
     /*TAB SWITCHING*/
@@ -159,6 +159,31 @@
             Binder.apply( this, arguments );
 
             on( this, 'submit');
+            on( this, 'dragenter' );
+            on( this, 'dragover' );
+            on( this, 'drop' );
+        }
+        , dragenter: function( e ) {
+            if (e.preventDefault) e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        }
+        , dragover: function( e ) {
+            if (e.preventDefault) e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        }
+        , drop: function ( e ) {
+            if (e.preventDefault) e.preventDefault();
+            if (e.stopPropagation) e.stopPropagation();
+
+            var uri = e.dataTransfer.getData('Text');
+
+            //accept drag drop of tracks 
+            if( uri.split(":")[1]=="track" ) {
+                var track = models.Track.fromURI( uri );
+                this._getPlaylistFromEchonest( track );
+            }
+
+            return false;
         }
       , submit: function ( event ) {
             if ( event )
@@ -272,7 +297,7 @@
             Binder.apply( this, arguments );
             on( this, 'click' );
         }
-      , click: function () {
+        , click: function () {
             this.context.whoSubmitted = this.name;
         }
     });
@@ -548,7 +573,7 @@
     define('AppResetSettings', AppButton, {
         click: function () { 
             //reset config values to default ones (also clears history)
-            jQuery.extend(config,defaultConfig);
+            config = jQuery.extend(true, config,defaultConfig);
             localStorage.setItem( "config", JSON.stringify( config ) );
 
             //refresh settings form values

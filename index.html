@@ -17,6 +17,7 @@
 		<section id="home" class="tabs" data-binder="class: Binder, name: Home, type: context">
 			<form data-binder="class: AppForm, name: Form">
 				<p>Search for a song or let Oscillator choose a random song from you library to create a radio-playlist based on it.</p>
+				<p>You can also drag and drop a track here to create a radio-playlist based on it.</p>
 				<fieldset>
 					<input type="text" data-binder="class: Binder, name: Query"/>
 					<button class="sp-button sp-primary" name="search" type="submit" data-binder="class:AppButton, name: Search">Search</button>
@@ -24,6 +25,7 @@
 				<button class="sp-button sp-primary" name="random" type="submit" data-binder="class:AppButton, name: Random">Random Song</button>
 				<span data-binder="class: AppError, delay: 1000" class="hidden"></span>
 			</form>
+
 			<ul data-binder="class: AppResults, name: Results, type: context" class="hidden">
 				<li data-binder="class: AppResult, type: context" data-binder-tmpl>
 					<span data-binder="class: Binder, name: Artist"></span>
