@@ -415,19 +415,6 @@
         }
     });
 
-    define('AppResetSettings', AppButton, {
-        click: function () { 
-            //reset config values to default ones (also clears history)
-            jQuery.extend(config,defaultConfig);
-            localStorage.setItem( "config", JSON.stringify( config ) );
-
-            //refresh settings form values
-            this.context.Form.autoload();
-
-            return false;
-        }
-    });
-
     var AppResults = define('AppResults', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
@@ -500,13 +487,15 @@
             $(this.elem).find('input:radio').val(
                     [config.echonest.radioType, config.echonest.playlistType, config.echonest.distribution ]
                 );
-            $(this.elem).find('input:text').val(config.playlist.songNumber);
 
             $( this.elem ).find('input:checkbox').each(function() {
                 var name  = $(this).attr('name');
                 if( config.filters[ name ] )    
                     $(this).attr('checked','checked')
             });
+
+            $(this.elem).find('[name="songNumber"]').val( config.playlist.songNumber );
+            $(this.elem).find('[name="variety"]').val( config.playlist.variety || 1 );
             
         }
         , submit: function( event ) {
@@ -528,6 +517,17 @@
                 if( number.match(/\d+/) )
                     config.playlist.songNumber = number;
             }
+
+            if( structured["variety"] ) {
+                var variety = structured["variety"];
+                if( number.match(/[0-9]*\.?[0-9]+/) )
+                    config.playlist.variety = variety;
+            }
+
+            if( structured["distribution"] ) {
+                config.playlist.distribution = structured["distribution"];
+            }
+            
             //filters
             for( var name in config.filters ) {
                 var value = config.filters[ name ];
@@ -542,6 +542,19 @@
             localStorage.setItem( "config", JSON.stringify( config ) );
 
             //TODO: show message save completed
+        }
+    });
+
+    define('AppResetSettings', AppButton, {
+        click: function () { 
+            //reset config values to default ones (also clears history)
+            jQuery.extend(config,defaultConfig);
+            localStorage.setItem( "config", JSON.stringify( config ) );
+
+            //refresh settings form values
+            this.context.Form.autoload();
+
+            return false;
         }
     });
 
