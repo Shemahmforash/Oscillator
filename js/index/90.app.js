@@ -33,7 +33,6 @@
             artistRepetition: 1,
             trackRepetition: 0,
         },
-        history: [],
     };
     var config;
     if( localStorage.getItem("config") ) {
@@ -42,6 +41,11 @@
     else {
         //copy default config obj
         config = jQuery.extend(true, config, defaultConfig);
+    }
+
+    var history = new Array();
+    if( localStorage.getItem("history") ) {
+        history= JSON.parse( localStorage.getItem("history") );
     }
 
     /*TAB SWITCHING*/
@@ -357,8 +361,8 @@
                 };
 
             //update config with new plailist
-            config.history.push( item2config );
-            localStorage.setItem( "config", JSON.stringify( config ) );
+            history.push( item2config );
+            localStorage.setItem( "history", JSON.stringify( history ) );
 
             var playlist = listOfTracks2Playlist( data );
 
@@ -375,9 +379,9 @@
                 };
 
             //update history
-            var history = new Array();
-            history.push( item2slider );
-            this.History.update( history );
+            var history2render = new Array();
+            history2render.push( item2slider );
+            this.History.update( history2render );
         }
     });
 
@@ -583,7 +587,6 @@
 
     define('AppResetSettings', AppButton, {
         click: function () { 
-            //reset config values to default ones (also clears history)
             config = jQuery.extend(true, config,defaultConfig);
             localStorage.setItem( "config", JSON.stringify( config ) );
 
@@ -599,21 +602,21 @@
             Binder.apply( this, arguments );
 
             //auto-update slider from history
-            if( config.history.length ) {
-                for ( var i = 0; i < config.history.length ; i++ ) {
+            if( history.length ) {
+                for ( var i = 0; i < history.length ; i++ ) {
                     var playlists = new Array();
 
                     var item = {};
-                    item.seed     = config.history[i].seed;
-                    item.playlist = listOfTracks2Playlist( config.history[i].playlist );
-                    item.playing  = config.history[i].playing;
+                    item.seed     = history[i].seed;
+                    item.playlist = listOfTracks2Playlist( history[i].playlist );
+                    item.playing  = history[i].playing;
 
                     playlists.push( item );
                     this.update( playlists );
                 }
                 this.show();
             }
-            this.root.config = config;
+            this.root.history = history;
         }
         , update: function ( val ) {
             var obj = this;
@@ -671,22 +674,22 @@
             this.context.context.seed = this.seed;
             this.context.context.Title.update( this.seed );
 
-            //set in config history, this one as the now playing
-            for ( var i = 0; i < config.history.length ; i++ ) {
-                if( this.seed.data.uri == config.history[i].seed.data.uri ) {
-                    config.history[i].playing = 1;     
+            //set in history, this one as the now playing
+            for ( var i = 0; i < history.length ; i++ ) {
+                if( this.seed.data.uri == history[i].seed.data.uri ) {
+                    history[i].playing = 1;     
                 }
             }
-            localStorage.setItem( "config", JSON.stringify( config ) );
+            localStorage.setItem( "history", JSON.stringify( history ) );
         }
         , delete: function () {
             //remove this item from config history
-            for ( var i = 0; i < config.history.length ; i++ ) {
-                if( this.seed.data.uri == config.history[i].seed.data.uri ) {
-                    config.history.splice(i,1);
+            for ( var i = 0; i < history.length ; i++ ) {
+                if( this.seed.data.uri == history[i].seed.data.uri ) {
+                    history.splice(i,1);
                 }
             }
-            localStorage.setItem( "config", JSON.stringify( config ) );
+            localStorage.setItem( "history", JSON.stringify( history ) );
 
             //after removing all slides, hide history
             if( this.context.children().length == 1 )
