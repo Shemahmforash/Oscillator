@@ -172,16 +172,27 @@
             e.dataTransfer.dropEffect = 'copy';
         }
         , drop: function ( e ) {
+            console.log( e );
             if (e.preventDefault) e.preventDefault();
             if (e.stopPropagation) e.stopPropagation();
 
             var uri = e.dataTransfer.getData('Text');
+            console.log("uri", uri );
 
-            //accept drag drop of tracks 
-            if( uri.split(":")[1]=="track" ) {
-                var track = models.Track.fromURI( uri );
-                this._getPlaylistFromEchonest( track );
+            var track;
+            //accept drag drop of tracks from within oscillator
+            if( uri.split(":")[1] == "track" ) {
+                track = models.Track.fromURI( uri );
             }
+            //from outside oscillator
+            else if( uri.match(/open.spotify.com\/track\/.+$/i) ) {
+                var splitted = uri.split("/");
+                var new_uri = "spotify:track:" + splitted.pop(); 
+                track = models.Track.fromURI( new_uri );
+            }
+
+            if( track )
+                this._getPlaylistFromEchonest( track );
 
             return false;
         }
