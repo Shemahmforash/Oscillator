@@ -32,6 +32,8 @@
             //avoid artist and track repetition?
             artistRepetition: 1,
             trackRepetition: 0,
+            autoload: 1,
+            saveHistory: 0,
         },
     };
     var config;
@@ -361,8 +363,10 @@
                 };
 
             //update config with new plailist
-            history.push( item2config );
-            localStorage.setItem( "history", JSON.stringify( history ) );
+            if( config.filters.saveHistory ) {
+                history.push( item2config );
+                localStorage.setItem( "history", JSON.stringify( history ) );
+            }
 
             var playlist = listOfTracks2Playlist( data );
 
@@ -378,10 +382,13 @@
                     'playlist': playlist,
                 };
 
-            //update history
-            var history2render = new Array();
-            history2render.push( item2slider );
-            this.History.update( history2render );
+            if( config.filters.saveHistory ) {
+                //update history
+                var history2render = new Array();
+                history2render.push( item2slider );
+
+                this.History.update( history2render );
+            }
         }
     });
 
@@ -602,7 +609,7 @@
             Binder.apply( this, arguments );
 
             //auto-update slider from history
-            if( history.length ) {
+            if( config.filters.autoload && history.length ) {
                 for ( var i = 0; i < history.length ; i++ ) {
                     var playlists = new Array();
 
