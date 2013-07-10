@@ -33,7 +33,7 @@
             artistRepetition: 1,
             trackRepetition: 0,
             autoload: 1,
-            saveHistory: 0,
+            saveHistory: 1,
         },
     };
     var config;
