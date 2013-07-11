@@ -52,56 +52,36 @@
 		<section class="tabs hidden" id="settings" data-binder="class: Binder, name: Settings, type: context">
 			<h1>Settings</h1>
 			<form data-binder="class: AppSettings, name: Form">
-				<fieldset>
-					<legend>General configuration</legend>
-					<label for="radio-type">Radio-type</label>
-                    <input type="radio" name="radio-type" value="artist-radio" style="-webkit-appearance:radio">Artist Radio
-                    <input type="radio" name="radio-type" value="song-radio" style="-webkit-appearance:radio">Song Radio
-                    <input type="radio" name="radio-type" value="genre-radio" style="-webkit-appearance:radio" disabled="disabled">Genre Radio
-
-                    <br/>
-
-					<label for="playlist">Playlist-type</label>
-                    <input type="radio" name="playlist" value="basic" style="-webkit-appearance:radio">Basic
-                    <input type="radio" name="playlist" value="static" style="-webkit-appearance:radio">Static
-                    <input type="radio" name="playlist" value="dynamic" style="-webkit-appearance:radio" disabled="disaled">Dynamic
-				</fieldset>
-				<fieldset>
-					<legend>Advanced configuration</legend>
-
-					<label for="songNumber">Song number</label>
-					<input type="text" name="songNumber" size="2" maxlength="2" />
-
-                    <br/>
-
-					<label for="start">Start the radio with the seed chosen</label>
-					<input type="checkbox" name="startWithSeed" value="startWithSeed" style="-webkit-appearance: checkbox !important;">
-
-					<label for="artist-repetition">Avoid artist repetition</label>
-					<input type="checkbox" name="artistRepetition" value="artistRepetition" style="-webkit-appearance: checkbox !important;">
-
-					<label for="track-repetition">Avoid track repetition</label>
-					<input type="checkbox" name="trackRepetition" value="trackRepetition" style="-webkit-appearance: checkbox !important;">
-
-                    <br/>
-
-					<label for="playlist">Distribution</label>
-                    <input type="radio" name="distribution" value="wandering" style="-webkit-appearance:radio">Wandering
-                    <input type="radio" name="distribution" value="focused" style="-webkit-appearance:radio">Focused
-
-                    <br/>
-
-					<label for="variety">Variety</label>
-					<input type="text" name="variety" size="3" maxlength="3" />
-
-                    <br />
-
-					<label for="save-history">Save history of generated playlists?</label>
-					<input type="checkbox" name="saveHistory" value="1" style="-webkit-appearance: checkbox !important;">
-                
-					<label for="autoload">Autoload playlist history?</label>
-					<input type="checkbox" name="autoload" value="1" style="-webkit-appearance: checkbox !important;">
-				</fieldset>
+				<section>
+					<h1>General configuration</h1>
+					<fieldset>
+						<legend>Radio-type</legend>
+						<label>Artist Radio<input type="radio" name="radio-type" value="artist-radio"></label>
+						<label>Song Radio<input type="radio" name="radio-type" value="song-radio"></label>
+						<label>Genre Radio<input type="radio" name="radio-type" value="genre-radio" disabled></label>
+					</fieldset>
+					<fieldset>
+						<legend>Playlist-type</legend>
+						<label>Basic<input type="radio" name="playlist" value="basic"></label>
+						<label>Static<input type="radio" name="playlist" value="static"></label>
+						<label>Dynamic<input type="radio" name="playlist" value="dynamic" disabled></label>
+					</fieldset>
+				</section>
+				<section>
+					<h1>Advanced configuration</h1>
+					<label>Song number<input type="text" name="songNumber" size="2" maxlength="2" /></label>
+					<label>Start the radio with the seed chosen<input type="checkbox" name="startWithSeed" value="startWithSeed"></label>
+					<label>Avoid artist repetition<input type="checkbox" name="artistRepetition" value="artistRepetition"></label>
+					<label>Avoid track repetition<input type="checkbox" name="trackRepetition" value="trackRepetition"></label>
+					<fieldset>
+						<legend>Distribution</legend>
+						<label>Wandering<input type="radio" name="distribution" value="wandering"></label>
+						<label>Focused<input type="radio" name="distribution" value="focused"></label>
+					</fieldset>
+					<label>Variety<input type="text" name="variety" size="3" maxlength="3" /></label>
+					<label>Save history of generated playlists?<input type="checkbox" name="saveHistory" value="1"></label>
+					<label>Autoload playlist history?<input type="checkbox" name="autoload" value="1"></label>
+				</section>
 				<button class="sp-button sp-primary" name="save" type="submit">Save Settings</button>
 			</form>
             <button class="sp-button sp-primary" type="button" data-binder="class: AppResetSettings, name: Reset">Reset to defaults</button>		
