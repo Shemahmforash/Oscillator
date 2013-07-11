@@ -7,6 +7,15 @@
 .hidden   {
 	display	: none;
 }
+input[type=radio] {
+	-webkit-appearance	: radio;
+}
+input[type=checkbox] {
+	-webkit-appearance	: checkbox;
+}
+input:disabled {
+	opacity	: .6;
+}
 /* General */
 html {
 	background-color	: #333;
@@ -96,4 +105,61 @@ div:empty + #history {
 #history > div {
 	float	: left;
 	margin	: 0 10px 10px 0;
+}
+/* Settings tab */
+#settings form  {
+	float	: left;
+	clear	: both;
+}
+#settings form > section  {
+	float			: left;
+	border-top		: 1px dotted #555;
+	padding-top		: 1em;
+	margin-right	: 1px;
+}
+#settings form > section  + section {
+	padding-left	: 20px;
+}
+#settings form > section > h1 {
+	font-weight	: bold;
+	margin		: 0 0 1em 0;
+	font-size	: 13px;
+	float		: left;
+	clear		: both;
+}
+#settings fieldset {
+	margin	: 1em 0;
+	float	: left;
+	clear	: both;
+}
+#settings h1 + fieldset {
+	margin-top	: 0;
+}
+#settings legend {
+	font-weight		: bold;
+	margin-bottom	: 0.5em;
+	padding			: 0;
+}
+#settings label {
+	float		: left;
+	clear		: both;
+	width		: 150px;
+}
+#settings fieldset label {
+	min-height	: 0;
+}
+#settings label {
+	padding-right	: 50px;
+	position		: relative;
+	min-height		: 25px;
+}
+#settings label input {
+	position	: absolute;
+	top			: 0;
+	right		: 0;
+}
+#settings button {
+	float		: left;
+	clear		: both;
+	margin-top 	: 1em;
 }
