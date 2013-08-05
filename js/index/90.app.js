@@ -178,12 +178,10 @@
             e.dataTransfer.dropEffect = 'copy';
         }
         , drop: function ( e ) {
-            console.log( e );
             if (e.preventDefault) e.preventDefault();
             if (e.stopPropagation) e.stopPropagation();
 
             var uri = e.dataTransfer.getData('Text');
-            console.log("uri", uri );
 
             var track;
             //accept drag drop of tracks from within oscillator
@@ -542,8 +540,7 @@
             });
 
             $(this.elem).find('[name="songNumber"]').val( config.playlist.songNumber );
-            $(this.elem).find('[name="variety"]').val( config.playlist.variety || 1 );
-            
+            $(this.elem).find('[name="variety"]').val( config.echonest.variety );
         }
         , submit: function( event ) {
             if ( event )
@@ -568,7 +565,7 @@
             if( structured["variety"] ) {
                 var variety = structured["variety"];
                 if( number.match(/[0-9]*\.?[0-9]+/) )
-                    config.playlist.variety = variety;
+                    config.echonest.variety = variety;
             }
 
             if( structured["distribution"] ) {
@@ -594,7 +591,7 @@
 
     define('AppResetSettings', AppButton, {
         click: function () { 
-            config = jQuery.extend(true, config,defaultConfig);
+            config = jQuery.extend(true, {}, defaultConfig);
             localStorage.setItem( "config", JSON.stringify( config ) );
 
             //refresh settings form values
