@@ -36,18 +36,16 @@
             saveHistory: 1,
         },
     };
-    var config;
+    var config = new Object();
     if( localStorage.getItem("config") ) {
         config = JSON.parse( localStorage.getItem("config") );
     }
-    else {
-        //copy default config obj
-        config = jQuery.extend(true, config, defaultConfig);
-    }
+    //merge default config into config obj
+    jQuery.extend(true, config, defaultConfig);
 
     var history = new Array();
     if( localStorage.getItem("history") ) {
-        history= JSON.parse( localStorage.getItem("history") );
+        history = JSON.parse( localStorage.getItem("history") );
     }
 
     /*TAB SWITCHING*/
