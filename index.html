@@ -23,7 +23,7 @@
 					<button class="sp-button sp-primary" name="search" type="submit" data-binder="class:AppButton, name: Search">Search</button>
 				</fieldset>
 				<button class="sp-button sp-primary" name="random" type="submit" data-binder="class:AppButton, name: Random">Random Song</button>
-				<span data-binder="class: AppError, delay: 1000" class="hidden"></span>
+				<span data-binder="class: AppError, name: Error, delay: 1000" class="hidden"></span>
 			</form>
 
 			<ul data-binder="class: AppResults, name: Results, type: context" class="hidden">
@@ -45,10 +45,12 @@
 				<div class="playlist" data-binder="class: AppPlaylist, name: Playlist"></div>
 				<section id="history" data-binder="class:AppHistory, name: History, type: Context" class="hidden">
 					<h1>Previous playlists</h1>
-					<div data-binder="class: AppSlide, name: Slide" data-binder-tmpl></div>
+					<div data-binder="class: AppSlide, name: Slide" data-binder-tmpl>
+                    </div>
 				</section>
 			</section>
 		</section>
+
 		<section class="tabs hidden" id="settings" data-binder="class: Binder, name: Settings, type: context">
 			<h1>Settings</h1>
 			<form data-binder="class: AppSettings, name: Form">

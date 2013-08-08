@@ -216,7 +216,6 @@
                     var msg = "Your library is empty. Oscillator can not get a random song from your library... You should use the search songs feature instead.";
                     this.Error.update( msg );
                 }
-                
             }
             //search spotify api for artists
             else {
@@ -229,9 +228,11 @@
             return false;
         },
         _getPlaylistFromEchonest: function( seed ) {
-            //TODO: show error message
-            if( !seed ) 
+            if( !seed ) {
+                var msg = "Must supply radio seed to echonest";
+                this.Error.update( msg );
                 return;
+            }
 
             var request = {
                     format:'jsonp',
@@ -250,7 +251,6 @@
                 request.track_id = seed.uri.replace('spotify', 'spotify-WW');
             }
 
-
             var url = 'http://developer.echonest.com/api/v4/playlist/' + config.echonest.playlistType + '?api_key=' + config.echonest.apiKey + '&callback=?';
 
              /* Set traditional mode in JS */
@@ -268,9 +268,6 @@
                         that.context.Player.seed = seed;
                         that.context.Player.update( songs );
                     }
-                    else {
-                        that.Error.update("trouble getting results");
-                    }
                 }
             );
 
@@ -278,12 +275,12 @@
         , _checkResponse: function (data) {
             if ( data.response ) {
                 if (data.response.status.code != 0) {
-                    this.Error.update("Whoops... Unexpected error from server. " + data.response.status.message);
+                    this.Error.update("Couldn't get a playlist from echonest: " + data.response.status.message);
                 } else {
                     return true;
                 }
             } else {
-                error("Unexpected response from server");
+                this.Error.update("Unexpected response from server. Please try again.");
             }
             return false;
         }
@@ -317,28 +314,15 @@
 
     define('AppError', Binder, {
         constructor: function ( elem, parent, args ) {
-            this.name = 'Error';
             this.delay = args.delay || 2000;
             Binder.apply( this, arguments );
         }
         , hide: function () {
-            delete this.timeout;
+            this.value('');
             return Binder.prototype.hide.call( this );
         }
-        , show: function () {
-            var obj = this;
-
-            Binder.prototype.show.call( obj );
-            clearTimeout( obj.timeout );
-
-            obj.timeout = setTimeout( 
-                function () { obj.hide(); }, obj.delay 
-            );
-
-            return obj;
-        }
         , update: function ( data ) {
-            //this.Super.prototype.update.call( this, data );
+            this.value( data );
             this.show();
         }
     });
