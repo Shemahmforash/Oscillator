@@ -235,7 +235,7 @@
             }
 
             var request = {
-                    format:'jsonp',
+//                    format:'jsonp',
                     limit: true,
                     results: config.playlist.songNumber,
                     type: config.echonest.radioType,
@@ -253,23 +253,26 @@
 
             var url = 'http://developer.echonest.com/api/v4/playlist/' + config.echonest.playlistType + '?api_key=' + config.echonest.apiKey + '&callback=?';
 
+            var that = this;
+
              /* Set traditional mode in JS */
             $.ajaxSetup({traditional: true, cache: true});
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: request
+            }).done(function( data ) { 
+                if ( that._checkResponse( data ) ) {
 
-            var that = this;
-            $.getJSON( url,  
-                request
-                , function ( data ) {
-                    if ( that._checkResponse( data ) ) {
+                    //filter songs and update the player/playlist
+                    var songs = filterSongs( data.response.songs, seed );
 
-                        //filter songs and update the player/playlist
-                        var songs = filterSongs( data.response.songs, seed );
-
-                        that.context.Player.seed = seed;
-                        that.context.Player.update( songs );
-                    }
+                    that.context.Player.seed = seed;
+                    that.context.Player.update( songs );
                 }
-            );
+            }).fail(function() { 
+                that.Error.update("Unexpected response from echonest server. Please try again.");
+            });
 
         }
         , _checkResponse: function (data) {
@@ -314,16 +317,29 @@
 
     define('AppError', Binder, {
         constructor: function ( elem, parent, args ) {
-            this.delay = args.delay || 2000;
+            this.delay = args.delay || 5000;
             Binder.apply( this, arguments );
         }
         , hide: function () {
+            delete this.timeout;
             this.value('');
             return Binder.prototype.hide.call( this );
         }
         , update: function ( data ) {
             this.value( data );
             this.show();
+        }
+        , show: function () {
+            var obj = this;
+
+            Binder.prototype.show.call( obj );
+            clearTimeout( obj.timeout );
+
+            obj.timeout = setTimeout( 
+                function () { obj.hide(); }, obj.delay 
+            );
+
+            return obj;
         }
     });
 
