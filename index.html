@@ -36,18 +36,36 @@
 					)
 				</li>
 			</ul>
-			<section class="player" data-binder="class: AppController, name: Player, type: Context">
+			<section class="player" data-binder="class: AppController, name: Player, type: context">
 				<h1 data-binder="class: AppTitle, name: Title"></h1>
 				<div class="player">
 					<div data-binder="class: AppPlayer, name: Player"></div>
 					<button class="sp-button sp-primary" type="button" data-binder="class: AppSavePlaylist, name: Save">Save Playlist</button>		
 				</div>
 				<div class="playlist" data-binder="class: AppPlaylist, name: Playlist"></div>
-				<section id="history" data-binder="class:AppHistory, name: History, type: Context" class="hidden">
+
+<!--
+				<section id="history" data-binder="class:AppHistory, name: History, type: context" class="hidden">
 					<h1>Previous playlists</h1>
 					<div data-binder="class: AppSlide, name: Slide" data-binder-tmpl>
                     </div>
 				</section>
+-->
+
+                <nav id="history" data-binder="class:AppHistory, name: History, type: context">
+					<h1>History</h1>
+
+                    <span class="sprite shop prev" data-binder="class: AppHistoryPrevious, name: Previous"><<</span>
+                    <span class="sprite shop next" data-binder="class: AppHistoryNext, name: Next">>></span>
+
+                    <div class="container" data-binder="class: Binder, name: Container, type: context">
+                        <ul data-binder="class:AppHistoryPanel, name: Panel">
+                            <li class="showcase" data-binder="class: AppHistoryItem" data-binder-tmpl>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
 			</section>
 		</section>
 
