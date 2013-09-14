@@ -619,6 +619,9 @@
                 this.show();
             }
             this.root.history = history;
+
+            //sliding part
+            this.start();
         }
         , update: function ( val ) {
             var obj = this;
@@ -636,6 +639,52 @@
             }
 
             return Binder.prototype.update( obj, val );
+        }
+        , start: function() {
+            this.currentIndex = 0;
+
+            this.$ = $( this.elem );
+
+            // make <ul> as large as all <li>’s
+            this.li = this.children();
+            var elem = $( this.li[0].elem );
+
+            this.step = elem.outerWidth( true );
+
+            //this.$.width = (this.li[0].clientWidth * this.li.length) + 'px';
+            this.$.css('width', (elem.outerWidth( true ) * this.li.length) + 'px');
+        }
+        , goTo: function( index ) {
+            // filter invalid indices
+            if (index < 0 || index > this.li.length - 1 || index == this.currentIndex )
+                return;
+        
+            // move <ul> left
+            this.$.css('left', '-' + (this.step * index) + 'px');
+        
+            this.currentIndex = index;
+        }
+        , previous: function() {
+            this.goTo(this.currentIndex - 1);
+        }
+        , next: function() {
+            this.goTo(this.currentIndex + 1);
+        }
+    });
+
+    define('AppNext', AppButton, {
+        click: function () { 
+            this.context.History.next();
+
+            return false;
+        }
+    });
+
+    define('AppPrevious', AppButton, {
+        click: function () { 
+            this.context.History.previous();
+
+            return false;
         }
     });
 
