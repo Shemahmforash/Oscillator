@@ -46,7 +46,8 @@
         config = JSON.parse( localStorage.getItem("config") );
     }
     //merge default config into config obj
-    jQuery.extend(true, config, defaultConfig);
+    var tmp = jQuery.extend(true, {}, defaultConfig);
+    config = jQuery.extend(true, tmp, config);
 
     var history = new Array();
     if( localStorage.getItem("history") ) {
@@ -604,12 +605,9 @@
         }
     });
 
-
     define('AppHistoryContainer', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
-
-            console.log( this.context.History.children().length );
 
             if( this.context.History.children().length) {
                 this.show();
