@@ -27,6 +27,11 @@
             suffix: "#oscillator", 
             songNumber: 20
         },
+        history: {
+            slider: {
+                step: 4   
+            }
+        },
         filters: {
             startWithSeed: 1,
             //avoid artist and track repetition?
@@ -635,40 +640,46 @@
                     }
                 });
 
+                this.start();
                 return obj.children();
             }
 
             return Binder.prototype.update( obj, val );
         }
         , start: function() {
-            this.currentIndex = 0;
+            //config
+            this.step = config.history.slider.step || 1;
 
+            this.currentIndex = 0;
             this.$ = $( this.elem );
 
-            // make <ul> as large as all <li>’s
+            // make container as large as the sum of all slides
             this.li = this.children();
             var elem = $( this.li[0].elem );
 
-            this.step = elem.outerWidth( true );
+            this.stepWidth = elem.outerWidth(true);
 
-            //this.$.width = (this.li[0].clientWidth * this.li.length) + 'px';
             this.$.css('width', (elem.outerWidth( true ) * this.li.length) + 'px');
         }
         , goTo: function( index ) {
             // filter invalid indices
-            if (index < 0 || index > this.li.length - 1 || index == this.currentIndex )
+            if ( index == this.currentIndex )
                 return;
-        
+            if (index < 0)
+                index = 0;
+            if ( index > this.li.length - 1 )
+                index = this.li.length - 1;
+
             // move <ul> left
-            this.$.css('left', '-' + (this.step * index) + 'px');
+            this.$.css('left', '-' + (this.stepWidth * index) + 'px');
         
             this.currentIndex = index;
         }
         , previous: function() {
-            this.goTo(this.currentIndex - 1);
+            this.goTo(this.currentIndex - this.step);
         }
         , next: function() {
-            this.goTo(this.currentIndex + 1);
+            this.goTo(this.currentIndex + this.step);
         }
     });
 
