@@ -98,11 +98,19 @@ div:empty + #history {
 	clear		: left;
 	border-top	: 1px dotted #555;
 	margin-top	: 10px;
+    width       : 870px;/*8 slides*/
+    overflow    : hidden;
 }
 #history h1 {
 	margin-top	: 10px;
 }
-#history > div {
+
+#history > nav {
+    -webkit-transition: 0.5s left;
+    position: relative;
+}
+
+#history > nav > div {
 	float	: left;
 	margin	: 0 10px 10px 0;
 }

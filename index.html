@@ -42,30 +42,18 @@
 					<div data-binder="class: AppPlayer, name: Player"></div>
 					<button class="sp-button sp-primary" type="button" data-binder="class: AppSavePlaylist, name: Save">Save Playlist</button>		
 				</div>
+
 				<div class="playlist" data-binder="class: AppPlaylist, name: Playlist"></div>
 
-<!--
-				<section id="history" data-binder="class:AppHistory, name: History, type: context" class="hidden">
-					<h1>Previous playlists</h1>
-					<div data-binder="class: AppSlide, name: Slide" data-binder-tmpl>
-                    </div>
-				</section>
--->
-
-                <nav id="history" data-binder="class:AppHistory, name: History, type: context">
-					<h1>History</h1>
-
-                    <span class="sprite shop prev" data-binder="class: AppHistoryPrevious, name: Previous"><<</span>
-                    <span class="sprite shop next" data-binder="class: AppHistoryNext, name: Next">>></span>
-
-                    <div class="container" data-binder="class: Binder, name: Container, type: context">
-                        <ul data-binder="class:AppHistoryPanel, name: Panel">
-                            <li class="showcase" data-binder="class: AppHistoryItem" data-binder-tmpl>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-
+                <section id="history" data-binder="class: AppHistoryContainer, name: HistoryContainer" class="hidden">
+                    <h1>Previous playlists</h1>
+                    <nav data-binder="class:AppHistory, name: History, type: Context">
+                        <div data-binder="class: AppSlide, name: Slide" data-binder-tmpl>
+                        </div>
+                    </nav>
+                    <button class="sp-button sp-primary" type="button" data-binder="class: AppPrevious, name: Previous">Previous</button>		
+                    <button class="sp-button sp-primary" type="button" data-binder="class: AppNext, name: Next">Next</button>		
+                </section>
 			</section>
 		</section>
 

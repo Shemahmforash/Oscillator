@@ -27,6 +27,11 @@
             suffix: "#oscillator", 
             songNumber: 20
         },
+        history: {
+            slider: {
+                step: 4   
+            }
+        },
         filters: {
             startWithSeed: 1,
             //avoid artist and track repetition?
@@ -309,14 +314,10 @@
         constructor: function () {
             Binder.apply( this, arguments );
             on( this, 'click' );
-
-            this.$ = $( this.elem );
         }
         , click: function () {
             this.context.whoSubmitted = this.name;
         }
-        , 'show': function() { this.$.fadeIn('fast');  }
-        , 'hide': function() { this.$.fadeOut('fast'); }
     });
 
     define('AppError', Binder, {
@@ -603,6 +604,21 @@
         }
     });
 
+
+    define('AppHistoryContainer', Binder, {
+        constructor: function () {
+            Binder.apply( this, arguments );
+
+            console.log( this.context.History.children().length );
+
+            if( this.context.History.children().length) {
+                this.show();
+                this.context.History.start();
+            }
+        }
+    });
+
+
     define('AppHistory', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
@@ -620,166 +636,86 @@
                     playlists.push( item );
                     this.update( playlists );
                 }
-                this.show();
             }
             this.root.history = history;
 
-            //TODO: how to implement queue with new binder?
-            //start slider
-            var that = this;
-//            this.root.queue.push( function() {
-                that.start();
-//            });
-
+            //sliding part
+            this.start();
         }
         , update: function ( val ) {
             var obj = this;
 
             if ( Array.isArray( val ) ) {
                 Array.prototype.forEach.call( val, function ( value, index ) {
-                    var child = obj.Container.Panel.attach( value.template || 0 );
+                    var child = obj.attach( value.template || 0 );
                     if ( value !== void 0 ) {
                         delete value.template;
                         child.update( value );
                     }
                 });
 
+                this.start();
                 return obj.children();
             }
 
             return Binder.prototype.update( obj, val );
         }
-        , 'start': function() {
-            if ( this.Container.Panel.length )
-                this.Container.Panel.select(0);
-        }
-    });
+        , start: function() {
+            //config
+            this.step = config.history.slider.step || 1;
 
-    define('AppHistoryPrevious', AppButton, {
-        'click': function( ev ) {                      
-            this.context.Container.Panel[ this.name.toLowerCase() ]();
-            return false;
-        }
-    });
-
-    define('AppHistoryNext', AppButton, {
-        constructor: function () {
-            AppButton.apply( this, arguments );
-
-            this.show();
-
-            var that = this;
-
-            //TODO: how to implement queue with new binder?
-/*
-            this.root.queue.push( function( ) {
-                var panel = that.context.Container.Panel;
-                if ( panel !== undefined && panel.length > 3 )
-                    that.show();
-            });*/
-        }
-        , 'click': function( ev ) {                      
-            this.context.Container.Panel[ this.name.toLowerCase() ]();
-            return false;
-        }
-    });
-
-    define('AppHistoryPanel', Binder, {
-        'constructor': function ( elem, caller ) {
-            Binder.apply( this, arguments );
-
+            this.currentIndex = 0;
             this.$ = $( this.elem );
 
-            this.interval = this.$.attr( 'data-jsb-interval' ) || 2000;
-            this.offset   = 1;
-            this.pageSize = this._pageSize( );
+            if( !this.children().length )
+                return;
+
+            // make container as large as the sum of all slides
+            var elem = $( this.children()[0].elem );
+
+            this.stepWidth = elem.outerWidth(true);
+
+            this.$.css('width', (elem.outerWidth( true ) * this.children().length) + 'px');
         }
-        , '_pageSize': function() {
-            return ( this.length )
-                ? Math.ceil( this.context.$.width() / this[0].$.outerWidth() ) : 0
+        , goTo: function( index ) {
+            // filter invalid indices
+            if ( index == this.currentIndex || !this.children().length )
+                return;
+            if (index < 0)
+                index = 0;
+            if ( index > this.children().length - 1 )
+                index = this.children().length - 1;
+
+            // move <ul> left
+            this.$.css('left', '-' + (this.stepWidth * index) + 'px');
+        
+            this.currentIndex = index;
         }
-        , 'pages': function() {
-            var children = this.children(),
-                width    = 0;
-
-            while ( child = children.shift() ) {
-                child.$ = $( child.elem );
-                width += child.$.outerWidth();
-            }
-
-            return Math.ceil( width / this.context.$.width() );
+        , previous: function() {
+            this.goTo(this.currentIndex - this.step);
         }
-        , '_mSelectedIndex': function() {
-            var selected = this.isSelected()[0];
-            if ( selected ) 
-                return this.children().indexOf( selected );
-        }
-        , 'previous': function() {
-            var that     = this,
-                index    = this._mSelectedIndex() - this.offset,
-                previous = this[ index ];
-
-            if ( previous ) {
-                this.context.context.Next.show();
-                this.select( previous );
-            }
-
-            if ( index <= 0 )
-                this.context.context.Previous.hide();
-        }
-        , 'next': function() {
-            var that    = this,
-                index   = this._mSelectedIndex() + this.offset,
-                toIndex = index + this.pageSize,
-                next    = this[ index ];
-
-            if ( next && ( toIndex <= this.length ) ) {
-                this.context.context.Previous.show();
-                this.select( next );
-            }
-                                                                    
-            if ( toIndex == this.length )
-                this.context.context.Next.hide();
-        }
-        , 'center': function( index ) {
-            var selectedIndex = this._mSelectedIndex();
-
-            if ( selectedIndex == index )
-                this.previous();
-            else if ( ( index - selectedIndex ) > this.pageSize / 2 )
-                this.next();
-        }
-        , 'select': function( to ) {
-            Binder.prototype.select.call( this, to );
-
-            if ( typeof to === 'number' )
-                to = this[ to ];
-
-            this.animate( to );
-
-            if ( this.interval ) {
-                if ( this.timeout )
-                    clearInterval( this.timeout );
-
-                var that = this;
-                this.timeout = setInterval( function() {
-                        that.next();
-                    }, this.interval);
-            }
-        }
-        , 'animate': function( to ) {
-            if( to.$ === undefined )
-                to.$ = $( to.elem );
-
-            var margin = to.$.offset().left - this.$.offset().left;
-
-            this.$.animate({
-                'margin-left': ( margin * -1 ) + 'px'
-            } , 300 );
+        , next: function() {
+            this.goTo(this.currentIndex + this.step);
         }
     });
 
-    define('AppHistoryItem', AppPlayer, { 
+    define('AppNext', AppButton, {
+        click: function () { 
+            this.context.History.next();
+
+            return false;
+        }
+    });
+
+    define('AppPrevious', AppButton, {
+        click: function () { 
+            this.context.History.previous();
+
+            return false;
+        }
+    });
+
+    define('AppSlide', AppPlayer, { 
         constructor: function () {
             Binder.apply( this, arguments );
 
@@ -795,15 +731,13 @@
             on( this, 'click' );
         }
         , update: function ( data ) {
-            if( data === undefined )
-                return;
-
             this.seed = data.seed;
 
             AppPlayer.prototype.update.call( this, data.playlist );
 
             //show history slider
-            this.context.show();
+            if( data )
+                this.context.show();
 
             //set it as the now playing
             if( data.playing )
@@ -812,13 +746,11 @@
         , click: function ( evt ) {
             var pl = this.player.context;
 
-            var controler = this.context.context.context;
-
             //update current playing with the slide clicked
-            controler.Player.update( pl );
-            controler.Playlist.update( pl );
-            controler.seed = this.seed;
-            controler.Title.update( this.seed );
+            this.context.context.Player.update( pl );
+            this.context.context.Playlist.update( pl );
+            this.context.context.seed = this.seed;
+            this.context.context.Title.update( this.seed );
 
             //set in history, this one as the now playing
             for ( var i = 0; i < history.length ; i++ ) {
@@ -827,13 +759,6 @@
                 }
             }
             localStorage.setItem( "history", JSON.stringify( history ) );
-
-            //center this item in slider
-            var panel = this.context.Panel;
-            
-            var index = panel.children().indexOf( this );
-            panel.center( index );
-            return false;
         }
         , delete: function () {
             //remove this item from config history
