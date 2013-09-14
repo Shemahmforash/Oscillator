@@ -43,9 +43,9 @@
 					<button class="sp-button sp-primary" type="button" data-binder="class: AppSavePlaylist, name: Save">Save Playlist</button>		
 				</div>
 				<div class="playlist" data-binder="class: AppPlaylist, name: Playlist"></div>
-                <section id="history">
+                <section id="history" data-binder="class: AppHistoryContainer, name: HistoryContainer" class="hidden">
                     <h1>Previous playlists</h1>
-                    <nav data-binder="class:AppHistory, name: History, type: Context" class="hidden">
+                    <nav data-binder="class:AppHistory, name: History, type: Context">
                         <div data-binder="class: AppSlide, name: Slide" data-binder-tmpl>
                         </div>
                     </nav>

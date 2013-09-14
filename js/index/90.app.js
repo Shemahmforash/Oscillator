@@ -604,6 +604,21 @@
         }
     });
 
+
+    define('AppHistoryContainer', Binder, {
+        constructor: function () {
+            Binder.apply( this, arguments );
+
+            console.log( this.context.History.children().length );
+
+            if( this.context.History.children().length) {
+                this.show();
+                this.context.History.start();
+            }
+        }
+    });
+
+
     define('AppHistory', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
@@ -621,7 +636,6 @@
                     playlists.push( item );
                     this.update( playlists );
                 }
-                this.show();
             }
             this.root.history = history;
 
@@ -653,22 +667,24 @@
             this.currentIndex = 0;
             this.$ = $( this.elem );
 
+            if( !this.children().length )
+                return;
+
             // make container as large as the sum of all slides
-            this.li = this.children();
-            var elem = $( this.li[0].elem );
+            var elem = $( this.children()[0].elem );
 
             this.stepWidth = elem.outerWidth(true);
 
-            this.$.css('width', (elem.outerWidth( true ) * this.li.length) + 'px');
+            this.$.css('width', (elem.outerWidth( true ) * this.children().length) + 'px');
         }
         , goTo: function( index ) {
             // filter invalid indices
-            if ( index == this.currentIndex )
+            if ( index == this.currentIndex || !this.children().length )
                 return;
             if (index < 0)
                 index = 0;
-            if ( index > this.li.length - 1 )
-                index = this.li.length - 1;
+            if ( index > this.children().length - 1 )
+                index = this.children().length - 1;
 
             // move <ul> left
             this.$.css('left', '-' + (this.stepWidth * index) + 'px');
