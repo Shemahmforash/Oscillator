@@ -29,7 +29,8 @@
         },
         history: {
             slider: {
-                step: 4   
+                step: 4,
+                minimum: 8
             }
         },
         filters: {
@@ -315,6 +316,8 @@
         constructor: function () {
             Binder.apply( this, arguments );
             on( this, 'click' );
+
+            this.$ = $( this.elem );
         }
         , click: function () {
             this.context.whoSubmitted = this.name;
@@ -390,6 +393,7 @@
                 history2render.push( item2slider );
 
                 this.History.update( history2render );
+                this.HistoryContainer.show();
             }
         }
     });
@@ -609,10 +613,11 @@
         constructor: function () {
             Binder.apply( this, arguments );
 
-            if( this.context.History.children().length) {
+            var length = this.context.History.children().length;
+            if( length )
                 this.show();
+            if( length > config.history.slider.minimum )
                 this.context.History.start();
-            }
         }
     });
 
@@ -660,12 +665,12 @@
         }
         , start: function() {
             //config
-            this.step = config.history.slider.step || 1;
+            this.step    = config.history.slider.step    || 1;
+            this.minimum = config.history.slider.minimum || 8;
 
-            this.currentIndex = 0;
             this.$ = $( this.elem );
 
-            if( !this.children().length )
+            if( !this.children().length || this.children().length <= this.minimum )
                 return;
 
             // make container as large as the sum of all slides
@@ -674,15 +679,33 @@
             this.stepWidth = elem.outerWidth(true);
 
             this.$.css('width', (elem.outerWidth( true ) * this.children().length) + 'px');
+
+            this.goTo(0);
         }
         , goTo: function( index ) {
             // filter invalid indices
             if ( index == this.currentIndex || !this.children().length )
                 return;
-            if (index < 0)
+
+            if (index < 0) {
                 index = 0;
-            if ( index > this.children().length - 1 )
-                index = this.children().length - 1;
+            }
+            else if ( index > this.children().length - this.minimum ) {
+                index = this.children().length - this.minimum;
+            }
+
+            if ( index == 0) {
+                this.context.Previous.hide();
+                this.context.Next.show();
+            }
+            else if ( index == this.children().length - this.minimum ) {
+                this.context.Previous.show();
+                this.context.Next.hide();
+            }
+            else {
+                this.context.Previous.show();
+                this.context.Next.show();
+            }
 
             // move <ul> left
             this.$.css('left', '-' + (this.stepWidth * index) + 'px');
