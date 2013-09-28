@@ -613,6 +613,9 @@
         constructor: function () {
             Binder.apply( this, arguments );
 
+            //autoload its children and start slider
+            this.context.History.autoload();
+
             var length = this.context.History.children().length;
             if( length )
                 this.show();
@@ -625,7 +628,8 @@
     define('AppHistory', Binder, {
         constructor: function () {
             Binder.apply( this, arguments );
-
+        }
+        , autoload: function() {
             //auto-update slider from history
             if( config.filters.autoload && history.length ) {
                 for ( var i = 0; i < history.length ; i++ ) {
@@ -641,9 +645,6 @@
                 }
             }
             this.root.history = history;
-
-            //sliding part
-            this.start();
         }
         , update: function ( val ) {
             var obj = this;
