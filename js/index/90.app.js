@@ -125,8 +125,11 @@
                     name  = songs[i].artist_name;
                 }
 
-                if( artists.indexOf( name ) == -1 ) {
-                    artists.push( name );
+                //remove html entities from string
+                var decoded = $("<div/>").html(name).text().toLowerCase().trim();
+
+                if( artists.indexOf( decoded ) == -1 ) {
+                    artists.push( decoded );
                     isAllowed = 1;
                 }
                 else
