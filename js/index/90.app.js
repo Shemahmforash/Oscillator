@@ -100,6 +100,15 @@
         return playlist;
     }
 
+    function htmlentities( html ) {
+        var text;
+
+        if( html !== undefined )
+            text = $("<div/>").html( html ).text().toLowerCase().trim();
+
+        return text;
+    }
+
     function filterSongs( songs, seed ) {
         var artists = new Array();
         var tracks  = new Array();
@@ -123,7 +132,7 @@
 
             if( name ) {
                 //remove html entities from string
-                name = $("<div/>").html(name).text().toLowerCase().trim();
+                name = htmlentities( name );
             }
 
             var title;
@@ -136,7 +145,7 @@
 
             if( title ) {
                 //remove html entities from string
-                title = $("<div/>").html(title).text().toLowerCase().trim();
+                title = htmlentities( title );
             }
 
             //check for artist duplication
