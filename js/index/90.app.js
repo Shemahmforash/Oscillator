@@ -120,7 +120,6 @@
             songs.unshift( seed );
 
         for ( var i = 0; i < songs.length; i++ ) {
-            var isAllowed = 1;
             var song = songs[i];
             var name;
             //spotify track object
@@ -152,25 +151,22 @@
             if( config.filters.artistRepetition ) {
                 if( artists.indexOf( name ) == -1 ) {
                     artists.push( name );
-                    isAllowed = 1;
                 }
                 else
-                    isAllowed = 0;
+                    continue;
             }
 
             //check track duplications (unless track flagged in artist repetition check)
-            if( isAllowed && config.filters.trackRepetition ) {
+            if( config.filters.trackRepetition ) {
                 if( tracks.indexOf( name + title ) == -1 ) {
                     tracks.push( name + title );
-                    isAllowed = 1;
                 }
                 else
-                    isAllowed = 0;
+                    continue;
             }
 
-            //add song to filtered array if it is flagged as accepted
-            if( isAllowed )
-                filteredSongs.push( song );
+            //add song to filtered array
+            filteredSongs.push( song );
         }
 
         return filteredSongs;
