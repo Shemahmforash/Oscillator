@@ -112,24 +112,37 @@
 
         for ( var i = 0; i < songs.length; i++ ) {
             var isAllowed = 1;
+            var song = songs[i];
+            var name;
+            //spotify track object
+            if( song.data )
+                name = song.data.artists[0].name;
+            //regular echonest object
+            else
+                name = song.artist_name;
+
+            if( name ) {
+                //remove html entities from string
+                name = $("<div/>").html(name).text().toLowerCase().trim();
+            }
+
+            var title;
+            //spotify track object
+            if( song.data )
+                title = song.name;
+            //regular echonest object
+            else 
+                title = song.title;
+
+            if( title ) {
+                //remove html entities from string
+                title = $("<div/>").html(title).text().toLowerCase().trim();
+            }
 
             //check for artist duplication
             if( config.filters.artistRepetition ) {
-                var name;
-                //spotify track object
-                if( songs[i].data ) {
-                    name = songs[i].data.artists[0].name;
-                }
-                //regular echonest object
-                else {
-                    name  = songs[i].artist_name;
-                }
-
-                //remove html entities from string
-                var decoded = $("<div/>").html(name).text().toLowerCase().trim();
-
-                if( artists.indexOf( decoded ) == -1 ) {
-                    artists.push( decoded );
+                if( artists.indexOf( name ) == -1 ) {
+                    artists.push( name );
                     isAllowed = 1;
                 }
                 else
@@ -138,19 +151,8 @@
 
             //check track duplications (unless track flagged in artist repetition check)
             if( isAllowed && config.filters.trackRepetition ) {
-                var track_id;
-
-                //spotify track object
-                if( songs[i].data ) {
-                    track_id = songs[i].uri.replace('-WW', '');
-                }
-                //regular echonest object
-                else {
-                    track_id = songs[i].tracks[0].id;
-                }
-
-                if( tracks.indexOf( track_id ) == -1 ) {
-                    tracks.push( track_id );
+                if( tracks.indexOf( name + title ) == -1 ) {
+                    tracks.push( name + title );
                     isAllowed = 1;
                 }
                 else
@@ -159,7 +161,7 @@
 
             //add song to filtered array if it is flagged as accepted
             if( isAllowed )
-                filteredSongs.push( songs[i] );
+                filteredSongs.push( song );
         }
 
         return filteredSongs;
